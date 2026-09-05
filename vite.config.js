@@ -8,5 +8,5 @@ import react from "@vitejs/plugin-react";
 // If you deploy to a User/Org Pages repo (named you.github.io), set base to "/".
 export default defineConfig({
   plugins: [react()],
-  base: "/family-routine-checklist/",
+  base: "/dailycheck/",
 });
