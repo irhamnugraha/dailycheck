@@ -779,7 +779,10 @@ export default function FamilyRoutineApp() {
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center py-4" style={{ background: "#DCE3F0", minHeight: 700 }}>
+    <div
+      className="app-font relative overflow-hidden"
+      style={{ width: "100vw", height: "100vh", background: theme.bg, display: "flex", flexDirection: "column", transition: "background 0.6s ease" }}
+    >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         .app-font * { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -789,17 +792,6 @@ export default function FamilyRoutineApp() {
         .pop-in { animation: pop 0.35s ease; }
         .app-scroll::-webkit-scrollbar { width: 0px; }
       `}</style>
-
-      {/* device bezel */}
-      <div style={{ background: INK, borderRadius: 40, padding: 12, boxShadow: "0 20px 50px rgba(27,37,89,0.35)" }}>
-        <div
-          className="app-font relative overflow-hidden"
-          style={{ width: 380, height: 720, background: theme.bg, borderRadius: 28, display: "flex", flexDirection: "column", transition: "background 0.6s ease" }}
-        >
-          {/* top notch */}
-          <div className="flex justify-center pt-2 pb-1">
-            <div style={{ width: 60, height: 6, background: "rgba(27,37,89,0.15)", borderRadius: 999 }} />
-          </div>
 
           {storageNotice && (
             <div className="mx-4 mb-1 rounded-xl px-3 py-2 flex items-center gap-2" style={{ background: "#FDECEA" }}>
@@ -898,9 +890,6 @@ export default function FamilyRoutineApp() {
               onClick={() => requirePin(() => { setSelectedChildId(null); setView("settings"); })}
             />
           </div>
-          <div className="flex justify-center pb-2 pt-1" style={{ background: "#FFFDF7" }}>
-            <div style={{ width: 90, height: 4, background: "rgba(27,37,89,0.2)", borderRadius: 999 }} />
-          </div>
 
           {/* overlays */}
           {photoCapture && (
@@ -975,8 +964,6 @@ export default function FamilyRoutineApp() {
               }}
             />
           )}
-        </div>
-      </div>
     </div>
   );
 }
