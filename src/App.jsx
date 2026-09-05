@@ -787,12 +787,14 @@ export default function FamilyRoutineApp({ session }) {
 
   return (
     <div
-      className="app-font relative overflow-hidden"
-      style={{ width: "100vw", height: "100vh", background: theme.bg, display: "flex", flexDirection: "column", transition: "background 0.6s ease" }}
+      className="app-font app-root relative overflow-hidden"
+      style={{ width: "100vw", background: theme.bg, display: "flex", flexDirection: "column", transition: "background 0.6s ease" }}
     >
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
         .app-font * { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .app-root { height: 100vh; }
+        @supports (height: 100dvh) { .app-root { height: 100dvh; } }
         .check-circle { transition: transform 0.15s ease, background 0.15s ease; }
         .check-circle:active { transform: scale(0.88); }
         @keyframes pop { 0%{transform:scale(0.6);opacity:0;} 60%{transform:scale(1.08);opacity:1;} 100%{transform:scale(1);} }
@@ -801,7 +803,7 @@ export default function FamilyRoutineApp({ session }) {
       `}</style>
 
           {storageNotice && (
-            <div className="mx-4 mb-1 rounded-xl px-3 py-2 flex items-center gap-2" style={{ background: "#FDECEA" }}>
+            <div className="mx-4 mb-1 rounded-xl px-3 py-2 flex items-center gap-2 shrink-0" style={{ background: "#FDECEA" }}>
               <span style={{ fontSize: 13 }}>⚠️</span>
               <p style={{ color: DANGER }} className="text-[10px] font-semibold flex-1">Gagal menyimpan data. Perubahan mungkin hilang saat halaman ditutup.</p>
               <button onClick={() => setStorageNotice(false)} className="shrink-0">
@@ -811,7 +813,7 @@ export default function FamilyRoutineApp({ session }) {
           )}
 
           {/* MAIN SCROLL AREA */}
-          <div className="flex-1 overflow-y-auto app-scroll px-4 pb-3">
+          <div className="flex-1 overflow-y-auto app-scroll px-4 pb-3" style={{ minHeight: 0 }}>
             {selectedChild ? (
               <ChildDetail
                 child={selectedChild}
@@ -888,7 +890,7 @@ export default function FamilyRoutineApp({ session }) {
           </div>
 
           {/* bottom nav */}
-          <div className="flex justify-around items-center px-2 py-3" style={{ background: "#FFFDF7", borderTop: "1px solid #EFE6CE" }}>
+          <div className="flex justify-around items-center px-2 py-3 shrink-0" style={{ background: "#FFFDF7", borderTop: "1px solid #EFE6CE" }}>
             <NavBtn active={view === "dashboard" && !selectedChild} icon={Home} label="Beranda" accent={theme.accent} onClick={() => { setSelectedChildId(null); setView("dashboard"); }} />
             <NavBtn active={view === "calendar" && !selectedChild} icon={CalendarDays} label="Kalender" accent={theme.accent} onClick={() => { setSelectedChildId(null); setView("calendar"); }} />
             <NavBtn

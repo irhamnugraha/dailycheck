@@ -151,7 +151,13 @@ export async function saveToSupabase(data) {
     if (insPeriodsErr) throw insPeriodsErr;
   }
 
-  // 3. children (full replace) — must exist before tasks/violations (FK)
+  // 3. children (full replace) — must exist before tasks/violations (FK).
+  // tasks/violations reference children.id, so they must be cleared first,
+  // otherwise deleting children fails with a foreign key violation.
+  const { error: delViolationsErr } = await supabase.from("violations").delete().not("id", "is", null);
+  if (delViolationsErr) throw delViolationsErr;
+  const { error: delTasksErr } = await supabase.from("tasks").delete().not("id", "is", null);
+  if (delTasksErr) throw delTasksErr;
   const { error: delChildrenErr } = await supabase.from("children").delete().not("id", "is", null);
   if (delChildrenErr) throw delChildrenErr;
   if (data.children.length > 0) {
