@@ -107,7 +107,10 @@ export async function loadFromSupabase() {
     events,
     periods,
     pin: settingsRow ? settingsRow.pin : "1234",
-    settings: { leaderboardEnabled: settingsRow ? settingsRow.leaderboard_enabled : true },
+    settings: {
+      leaderboardEnabled: settingsRow ? settingsRow.leaderboard_enabled : true,
+      familyName: settingsRow ? settingsRow.family_name || "" : "",
+    },
     location: settingsRow && settingsRow.lat != null && settingsRow.lon != null
       ? { lat: settingsRow.lat, lon: settingsRow.lon }
       : null,
@@ -122,6 +125,7 @@ export async function saveToSupabase(data) {
     id: 1,
     pin: data.pin,
     leaderboard_enabled: data.settings.leaderboardEnabled,
+    family_name: data.settings.familyName || "",
     lat: data.location ? data.location.lat : null,
     lon: data.location ? data.location.lon : null,
     last_active_date: data.lastActiveDate,

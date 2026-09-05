@@ -88,7 +88,10 @@ const DEFAULT_PERIODS = [
 const NEW_PERIOD_COLORS = ["#FF6B4A", "#00B8A9", "#7B5EA7", "#4A90E2", "#FF6FA5", "#3DDC97", "#FF9F45", "#5B6EE1"];
 
 const AVATAR_COLORS = ["#FF6B4A", "#00B8A9", "#7B5EA7", "#4A90E2", "#FF6FA5", "#3DDC97", "#FF9F45", "#5B6EE1"];
-const AVATAR_EMOJIS = ["🦁", "🐯", "🐨", "🐰", "🦊", "🐼", "🐸", "🦄", "🐬", "🐢", "🐱", "🐶", "🐹", "🦋"];
+const AVATAR_EMOJIS = [
+  "🦁", "🐯", "🐨", "🐰", "🦊", "🐼", "🐸", "🦄", "🐬", "🐢", "🐱", "🐶", "🐹", "🦋",
+  "🤖", "🚗", "🚕", "🚓", "🚒", "🚑", "🚜", "🏎️", "🚀", "✈️", "🚁", "🚂", "🚲", "🛵",
+];
 
 // Soft, clean theme that rotates by day of week (0=Minggu ... 6=Sabtu)
 const DAILY_THEMES = [
@@ -223,7 +226,7 @@ function playChime() {
   } catch (e) {}
 }
 function cloneTemplate() {
-  return DEFAULT_TEMPLATE.map((t) => ({ ...t, active: true, done: false, doneAt: null, earnedPoints: 0, custom: false, needsPhoto: false, photo: null }));
+  return DEFAULT_TEMPLATE.map((t) => ({ ...t, id: genId(), active: true, done: false, doneAt: null, earnedPoints: 0, custom: false, needsPhoto: false, photo: null }));
 }
 function pickBonusTask(tasks) {
   const eligible = tasks.filter((t) => t.active !== false);
@@ -719,6 +722,9 @@ export default function FamilyRoutineApp({ session }) {
   function toggleLeaderboard() {
     setData((prev) => ({ ...prev, settings: { ...prev.settings, leaderboardEnabled: !prev.settings.leaderboardEnabled } }));
   }
+  function updateFamilyName(name) {
+    setData((prev) => ({ ...prev, settings: { ...prev.settings, familyName: name } }));
+  }
   function detectLocation() {
     if (!navigator.geolocation) {
       setLocationStatus("error");
@@ -862,6 +868,7 @@ export default function FamilyRoutineApp({ session }) {
                 onMovePeriod={movePeriod}
                 settings={data.settings}
                 onToggleLeaderboard={toggleLeaderboard}
+                onUpdateFamilyName={updateFamilyName}
                 location={data.location}
                 locationStatus={locationStatus}
                 onDetectLocation={detectLocation}
@@ -1138,6 +1145,9 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
   return (
     <div className="relative">
       <div className="pt-2 pb-3 text-center">
+        {data.settings.familyName && (
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-xs uppercase tracking-wide mb-1">{data.settings.familyName}</p>
+        )}
         <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 46, lineHeight: 1 }} className="font-extrabold tabular-nums">
           {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
         </p>
@@ -1574,12 +1584,26 @@ function CalendarView({ data, calMonth, setCalMonth, selectedDay, setSelectedDay
 }
 
 /* ---------- Settings ---------- */
-function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChild, onDeleteChild, confirmDeleteChild, onConfirmDelete, onCancelDelete, newPin, setNewPin, pinSaved, onSavePin, periods, onUpdatePeriod, onAddPeriod, onDeletePeriod, onMovePeriod, settings, onToggleLeaderboard, onOpenViolationSheet, onResolveViolation, location, locationStatus, onDetectLocation, onSetManualLocation }) {
+function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChild, onDeleteChild, confirmDeleteChild, onConfirmDelete, onCancelDelete, newPin, setNewPin, pinSaved, onSavePin, periods, onUpdatePeriod, onAddPeriod, onDeletePeriod, onMovePeriod, settings, onToggleLeaderboard, onUpdateFamilyName, onOpenViolationSheet, onResolveViolation, location, locationStatus, onDetectLocation, onSetManualLocation }) {
   const [confirmDeletePeriod, setConfirmDeletePeriod] = useState(null);
   const [manualLoc, setManualLoc] = useState({ lat: location ? String(location.lat) : "", lon: location ? String(location.lon) : "" });
+  const [familyNameDraft, setFamilyNameDraft] = useState(settings.familyName || "");
   return (
     <div>
       <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold pt-2 pb-3">Pengaturan</h1>
+
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Nama Keluarga</p>
+      <p style={{ color: "#8A8360" }} className="text-[11px] mb-2">Tampil sebagai identitas di halaman Beranda.</p>
+      <div className="rounded-2xl p-3 mb-6 flex items-center gap-2" style={{ background: "#FFFDF7" }}>
+        <input
+          value={familyNameDraft}
+          onChange={(e) => setFamilyNameDraft(e.target.value)}
+          onBlur={() => onUpdateFamilyName(familyNameDraft.trim())}
+          placeholder="misal: Keluarga Nugraha"
+          className="flex-1 min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
+          style={{ background: "#F1ECDB", color: INK }}
+        />
+      </div>
 
       <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Akun</p>
       <div className="rounded-2xl p-3 mb-6 flex items-center gap-2" style={{ background: "#FFFDF7" }}>
