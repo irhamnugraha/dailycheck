@@ -5,6 +5,7 @@ import {
   ArrowLeft, Users, Bell, GripVertical, ChevronUp, ChevronDown
 } from "lucide-react";
 import { loadFromSupabase, saveToSupabase } from "./dataStore";
+import { supabase } from "./supabaseClient";
 
 /* ---------- theme ---------- */
 const INK = "#1B2559";
@@ -460,7 +461,7 @@ function PhotoCaptureSheet({ label, emoji, onConfirm, onCancel }) {
 }
 
 /* ---------- main app ---------- */
-export default function FamilyRoutineApp() {
+export default function FamilyRoutineApp({ session }) {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const [storageNotice, setStorageNotice] = useState(false);
@@ -843,6 +844,8 @@ export default function FamilyRoutineApp() {
               <SettingsView
                 data={data}
                 accent={theme.accent}
+                userEmail={session.user.email}
+                onLogout={() => supabase.auth.signOut()}
                 onAddChild={() => { setEditChild(null); setShowChildSheet(true); }}
                 onEditChild={(c) => { setEditChild(c); setShowChildSheet(true); }}
                 onDeleteChild={(c) => setConfirmDeleteChild(c)}
@@ -1138,8 +1141,30 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
         <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 46, lineHeight: 1 }} className="font-extrabold tabular-nums">
           {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
         </p>
-        <p style={{ color: "#8A8360" }} className="text-xs font-semibold mt-1">{formatDateID(now)}</p>
+        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 18 }} className="font-bold mt-1">{formatDateID(now)}</p>
       </div>
+
+      {upcoming.length > 0 && (
+        <div className="mb-4">
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Acara Mendatang</p>
+          <div className="flex flex-col gap-2">
+            {upcoming.map((e) => {
+              const who = e.who === "all" ? null : data.children.find((c) => c.id === e.who);
+              const dot = who ? who.color : INK;
+              const d = new Date(e.date + "T00:00:00");
+              return (
+                <div key={e.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
+                  <div style={{ width: 8, height: 8, borderRadius: 999, background: dot }} />
+                  <div className="flex-1">
+                    <p style={{ color: INK }} className="text-xs font-bold">{e.title}</p>
+                    <p style={{ color: "#8A8360" }} className="text-[10px]">{DAY_SHORT[d.getDay()]}, {d.getDate()} {MONTH_NAMES[d.getMonth()]}{e.time ? ` · ${e.time}` : ""} {who ? `· ${who.name}` : "· Semua Keluarga"}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <PrayerTimesCard now={now} location={data.location} />
 
@@ -1183,28 +1208,6 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
                 <span style={{ color: "#8A8360" }} className="text-xs font-semibold">{c.weeklyPoints} poin</span>
               </div>
             ))}
-          </div>
-        </div>
-      )}
-
-      {upcoming.length > 0 && (
-        <div className="mt-5">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Acara Mendatang</p>
-          <div className="flex flex-col gap-2">
-            {upcoming.map((e) => {
-              const who = e.who === "all" ? null : data.children.find((c) => c.id === e.who);
-              const dot = who ? who.color : INK;
-              const d = new Date(e.date + "T00:00:00");
-              return (
-                <div key={e.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 999, background: dot }} />
-                  <div className="flex-1">
-                    <p style={{ color: INK }} className="text-xs font-bold">{e.title}</p>
-                    <p style={{ color: "#8A8360" }} className="text-[10px]">{DAY_SHORT[d.getDay()]}, {d.getDate()} {MONTH_NAMES[d.getMonth()]}{e.time ? ` · ${e.time}` : ""} {who ? `· ${who.name}` : "· Semua Keluarga"}</p>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </div>
       )}
@@ -1571,12 +1574,27 @@ function CalendarView({ data, calMonth, setCalMonth, selectedDay, setSelectedDay
 }
 
 /* ---------- Settings ---------- */
-function SettingsView({ data, accent, onAddChild, onEditChild, onDeleteChild, confirmDeleteChild, onConfirmDelete, onCancelDelete, newPin, setNewPin, pinSaved, onSavePin, periods, onUpdatePeriod, onAddPeriod, onDeletePeriod, onMovePeriod, settings, onToggleLeaderboard, onOpenViolationSheet, onResolveViolation, location, locationStatus, onDetectLocation, onSetManualLocation }) {
+function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChild, onDeleteChild, confirmDeleteChild, onConfirmDelete, onCancelDelete, newPin, setNewPin, pinSaved, onSavePin, periods, onUpdatePeriod, onAddPeriod, onDeletePeriod, onMovePeriod, settings, onToggleLeaderboard, onOpenViolationSheet, onResolveViolation, location, locationStatus, onDetectLocation, onSetManualLocation }) {
   const [confirmDeletePeriod, setConfirmDeletePeriod] = useState(null);
   const [manualLoc, setManualLoc] = useState({ lat: location ? String(location.lat) : "", lon: location ? String(location.lon) : "" });
   return (
     <div>
       <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold pt-2 pb-3">Pengaturan</h1>
+
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Akun</p>
+      <div className="rounded-2xl p-3 mb-6 flex items-center gap-2" style={{ background: "#FFFDF7" }}>
+        <div className="flex-1 min-w-0">
+          <p style={{ color: "#8A8360" }} className="text-[10px]">Masuk sebagai</p>
+          <p style={{ color: INK }} className="text-xs font-semibold truncate">{userEmail}</p>
+        </div>
+        <button
+          onClick={onLogout}
+          className="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold"
+          style={{ background: "#FDECEA", color: DANGER }}
+        >
+          Keluar
+        </button>
+      </div>
 
       <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Lokasi untuk Jadwal Shalat</p>
       <p style={{ color: "#8A8360" }} className="text-[11px] mb-2">Dipakai untuk menghitung jadwal shalat di beranda (dihitung sendiri, tidak perlu internet).</p>
