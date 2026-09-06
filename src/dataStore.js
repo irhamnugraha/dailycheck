@@ -1,4 +1,5 @@
 import { supabase } from "./supabaseClient";
+import { DEFAULT_PERIODS } from "./constants";
 
 /**
  * This app keeps the exact same in-memory `data` shape that the original
@@ -83,14 +84,18 @@ export async function loadFromSupabase() {
     violations: (violationsByChild[c.id] || []).sort((a, b) => b.date.localeCompare(a.date)),
   }));
 
-  const periods = periodsRows.map((p) => ({
-    key: p.key,
-    label: p.label,
-    emoji: p.emoji,
-    color: p.color,
-    start: p.start_time,
-    end: p.end_time,
-  }));
+  // A fresh install (empty periods table) starts from the same defaults
+  // configured for this app, instead of an empty time-category list.
+  const periods = periodsRows.length > 0
+    ? periodsRows.map((p) => ({
+        key: p.key,
+        label: p.label,
+        emoji: p.emoji,
+        color: p.color,
+        start: p.start_time,
+        end: p.end_time,
+      }))
+    : DEFAULT_PERIODS.map((p) => ({ ...p }));
 
   const events = eventsRows.map((e) => ({
     id: e.id,

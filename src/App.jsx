@@ -6,6 +6,7 @@ import {
 } from "lucide-react";
 import { loadFromSupabase, saveToSupabase } from "./dataStore";
 import { supabase } from "./supabaseClient";
+import { DEFAULT_PERIODS } from "./constants";
 
 /* ---------- theme ---------- */
 const INK = "#1B2559";
@@ -80,14 +81,18 @@ function calcPrayerTimes(year, month, day, lat, lon, tz) {
   };
 }
 
-const DEFAULT_PERIODS = [
-  { key: "subuh", label: "Subuh", emoji: "🌅", color: "#5B6EE1", start: "04:00", end: "06:00" },
-  { key: "siang", label: "Siang & Sore", emoji: "🌤️", color: "#00B8A9", start: "06:00", end: "17:00" },
-  { key: "malam", label: "Malam", emoji: "🌙", color: "#7B5EA7", start: "17:00", end: "21:00" },
+const PALETTE_COLORS = [
+  "#FF6B4A", "#FF9F45", "#FFD23F", "#3DDC97", "#06D6A0", "#00B8A9",
+  "#2EC4B6", "#4A90E2", "#118AB2", "#5B6EE1", "#3A86FF", "#8338EC",
+  "#7B5EA7", "#FF6FA5", "#EF476F", "#E8484F", "#FB5607", "#06A77D",
 ];
-const NEW_PERIOD_COLORS = ["#FF6B4A", "#00B8A9", "#7B5EA7", "#4A90E2", "#FF6FA5", "#3DDC97", "#FF9F45", "#5B6EE1"];
+const NEW_PERIOD_COLORS = PALETTE_COLORS;
+const PERIOD_ICONS = [
+  "🌌", "🌃", "🌙", "⭐", "🌠", "🌅", "🌄", "☀️", "🌤️", "⛅", "🌥️", "🌇",
+  "🌆", "🕌", "📖", "📚", "🏠", "🍽️", "🧹", "🛏️", "🚿", "🎒", "⚽", "🎮",
+];
 
-const AVATAR_COLORS = ["#FF6B4A", "#00B8A9", "#7B5EA7", "#4A90E2", "#FF6FA5", "#3DDC97", "#FF9F45", "#5B6EE1"];
+const AVATAR_COLORS = PALETTE_COLORS;
 const AVATAR_EMOJIS = [
   "🦁", "🐯", "🐨", "🐰", "🦊", "🐼", "🐸", "🦄", "🐬", "🐢", "🐱", "🐶", "🐹", "🦋",
   "🤖", "🚗", "🚕", "🚓", "🚒", "🚑", "🚜", "🏎️", "🚀", "✈️", "🚁", "🚂", "🚲", "🛵",
@@ -359,6 +364,112 @@ function Sheet({ title, onClose, children }) {
         <div className="overflow-y-auto px-5 py-4">{children}</div>
       </div>
     </div>
+  );
+}
+
+// `fixed` (not `absolute`) so this always covers the full screen even when
+// opened from inside another Sheet — a nested Sheet would instead anchor to
+// that Sheet's own panel, since Sheet's content wrapper is `position: relative`.
+function PickerModal({ title, onClose, children }) {
+  return (
+    <div className="fixed inset-0 z-[60] flex flex-col justify-end" onClick={onClose}>
+      <div className="absolute inset-0" style={{ background: "rgba(27,37,89,0.5)" }} />
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative rounded-t-3xl"
+        style={{ background: "#FFFDF7", maxHeight: "70%", boxShadow: "0 -8px 24px rgba(0,0,0,0.25)" }}
+      >
+        <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b" style={{ borderColor: "#EFE6CE" }}>
+          <h3 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-sm font-bold">{title}</h3>
+          <button onClick={onClose} style={{ background: "#F1ECDB" }} className="p-1.5 rounded-full">
+            <X size={14} color={INK} />
+          </button>
+        </div>
+        <div className="overflow-y-auto px-5 py-4">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+function IconPickerButton({ value, options, onChange, activeColor, size = 40 }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="relative rounded-full flex items-center justify-center shrink-0"
+        style={{ width: size, height: size, background: activeColor || "#F1ECDB", fontSize: size * 0.45 }}
+      >
+        {value}
+        <span
+          className="absolute rounded-full flex items-center justify-center"
+          style={{ width: 16, height: 16, bottom: -2, right: -2, background: INK, border: "2px solid #FFFDF7" }}
+        >
+          <Pencil size={8} color="#fff" />
+        </span>
+      </button>
+      {open && (
+        <PickerModal title="Pilih Ikon" onClose={() => setOpen(false)}>
+          <div className="grid grid-cols-6 gap-2">
+            {options.map((em) => (
+              <button
+                key={em}
+                onClick={() => { onChange(em); setOpen(false); }}
+                className="rounded-2xl flex items-center justify-center"
+                style={{
+                  aspectRatio: "1 / 1",
+                  fontSize: 20,
+                  background: value === em ? (activeColor || INK) : "#F1ECDB",
+                  border: value === em ? `2px solid ${INK}` : "2px solid transparent",
+                }}
+              >
+                {em}
+              </button>
+            ))}
+          </div>
+        </PickerModal>
+      )}
+    </>
+  );
+}
+
+function ColorPickerButton({ value, options, onChange, size = 32 }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="relative rounded-full shrink-0"
+        style={{ width: size, height: size, background: value, border: "2px solid #FFFDF7", boxShadow: "0 0 0 2px #E3D9B4" }}
+      >
+        <span
+          className="absolute rounded-full flex items-center justify-center"
+          style={{ width: 15, height: 15, bottom: -3, right: -3, background: INK, border: "2px solid #FFFDF7" }}
+        >
+          <Pencil size={7} color="#fff" />
+        </span>
+      </button>
+      {open && (
+        <PickerModal title="Pilih Warna" onClose={() => setOpen(false)}>
+          <div className="grid grid-cols-6 gap-3">
+            {options.map((c) => (
+              <button
+                key={c}
+                onClick={() => { onChange(c); setOpen(false); }}
+                className="rounded-full flex items-center justify-center"
+                style={{
+                  aspectRatio: "1 / 1",
+                  background: c,
+                  border: value === c ? `3px solid ${INK}` : "3px solid transparent",
+                }}
+              >
+                {value === c && <Check size={16} color="#fff" strokeWidth={3} />}
+              </button>
+            ))}
+          </div>
+        </PickerModal>
+      )}
+    </>
   );
 }
 
@@ -1749,11 +1860,13 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
             ) : (
               <>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className="flex flex-wrap gap-1 shrink-0" style={{ maxWidth: 108 }}>
-                    {["🌅", "🌤️", "🌙", "⭐", "📚", "🏠", "🍽️", "🧹"].map((em) => (
-                      <button key={em} onClick={() => onUpdatePeriod(period.key, { emoji: em })} className="rounded-full flex items-center justify-center" style={{ width: 22, height: 22, background: period.emoji === em ? period.color : "#F1ECDB", fontSize: 12 }}>{em}</button>
-                    ))}
-                  </div>
+                  <IconPickerButton
+                    value={period.emoji}
+                    options={PERIOD_ICONS}
+                    activeColor={period.color}
+                    onChange={(em) => onUpdatePeriod(period.key, { emoji: em })}
+                    size={32}
+                  />
                   <input
                     value={period.label}
                     onChange={(e) => onUpdatePeriod(period.key, { label: e.target.value })}
@@ -1773,11 +1886,12 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
                   </button>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="flex flex-wrap gap-1 shrink-0">
-                    {NEW_PERIOD_COLORS.map((c) => (
-                      <button key={c} onClick={() => onUpdatePeriod(period.key, { color: c })} className="rounded-full" style={{ width: 16, height: 16, background: c, border: period.color === c ? `2px solid ${INK}` : "2px solid transparent" }} />
-                    ))}
-                  </div>
+                  <ColorPickerButton
+                    value={period.color}
+                    options={NEW_PERIOD_COLORS}
+                    onChange={(c) => onUpdatePeriod(period.key, { color: c })}
+                    size={26}
+                  />
                   <input
                     type="time"
                     value={period.start}
@@ -2007,21 +2121,29 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
           />
         </div>
 
-        <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Avatar</label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {AVATAR_EMOJIS.map((em) => (
-              <button key={em} onClick={() => setForm({ ...form, emoji: em })} className="rounded-full flex items-center justify-center" style={{ width: 34, height: 34, background: form.emoji === em ? form.color : "#F1ECDB", fontSize: 16 }}>{em}</button>
-            ))}
+        <div className="flex items-center gap-4">
+          <div>
+            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Avatar</label>
+            <div className="mt-1.5">
+              <IconPickerButton
+                value={form.emoji}
+                options={AVATAR_EMOJIS}
+                activeColor={form.color}
+                onChange={(em) => setForm({ ...form, emoji: em })}
+                size={48}
+              />
+            </div>
           </div>
-        </div>
-
-        <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Warna</label>
-          <div className="flex flex-wrap gap-2 mt-1">
-            {AVATAR_COLORS.map((c) => (
-              <button key={c} onClick={() => setForm({ ...form, color: c })} className="rounded-full" style={{ width: 26, height: 26, background: c, border: form.color === c ? `3px solid ${INK}` : "3px solid transparent" }} />
-            ))}
+          <div>
+            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Warna</label>
+            <div className="mt-1.5">
+              <ColorPickerButton
+                value={form.color}
+                options={AVATAR_COLORS}
+                onChange={(c) => setForm({ ...form, color: c })}
+                size={40}
+              />
+            </div>
           </div>
         </div>
 
