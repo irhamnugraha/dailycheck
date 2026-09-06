@@ -133,7 +133,16 @@ export async function saveToSupabase(data) {
   });
   if (settingsErr) throw settingsErr;
 
-  // 2. periods (full replace)
+  // 2. Clear everything that references children.id or periods.key before
+  // touching either of those tables, otherwise the delete below fails with
+  // a foreign key violation (tasks references BOTH children and periods;
+  // violations references children).
+  const { error: delViolationsErr } = await supabase.from("violations").delete().not("id", "is", null);
+  if (delViolationsErr) throw delViolationsErr;
+  const { error: delTasksErr } = await supabase.from("tasks").delete().not("id", "is", null);
+  if (delTasksErr) throw delTasksErr;
+
+  // 3. periods (full replace) — safe now that tasks no longer reference any period.
   const { error: delPeriodsErr } = await supabase.from("periods").delete().not("key", "is", null);
   if (delPeriodsErr) throw delPeriodsErr;
   if (data.periods.length > 0) {
@@ -151,13 +160,7 @@ export async function saveToSupabase(data) {
     if (insPeriodsErr) throw insPeriodsErr;
   }
 
-  // 3. children (full replace) — must exist before tasks/violations (FK).
-  // tasks/violations reference children.id, so they must be cleared first,
-  // otherwise deleting children fails with a foreign key violation.
-  const { error: delViolationsErr } = await supabase.from("violations").delete().not("id", "is", null);
-  if (delViolationsErr) throw delViolationsErr;
-  const { error: delTasksErr } = await supabase.from("tasks").delete().not("id", "is", null);
-  if (delTasksErr) throw delTasksErr;
+  // 4. children (full replace) — must exist before tasks/violations are re-inserted (FK).
   const { error: delChildrenErr } = await supabase.from("children").delete().not("id", "is", null);
   if (delChildrenErr) throw delChildrenErr;
   if (data.children.length > 0) {
@@ -183,7 +186,7 @@ export async function saveToSupabase(data) {
     if (insChildrenErr) throw insChildrenErr;
   }
 
-  // 4. tasks (full replace, after children)
+  // 5. tasks (full replace, after both children and periods exist again)
   const allTasks = data.children.flatMap((c) =>
     c.tasks.map((t, i) => ({
       id: t.id,
@@ -207,7 +210,7 @@ export async function saveToSupabase(data) {
     if (insTasksErr) throw insTasksErr;
   }
 
-  // 5. events (full replace)
+  // 6. events (full replace)
   const { error: delEventsErr } = await supabase.from("events").delete().not("id", "is", null);
   if (delEventsErr) throw delEventsErr;
   if (data.events.length > 0) {
@@ -225,7 +228,7 @@ export async function saveToSupabase(data) {
     if (insEventsErr) throw insEventsErr;
   }
 
-  // 6. violations (full replace, after children)
+  // 7. violations (full replace, after children)
   const allViolations = data.children.flatMap((c) =>
     (c.violations || []).map((v) => ({
       id: v.id,
