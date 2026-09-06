@@ -832,6 +832,7 @@ export default function FamilyRoutineApp({ session }) {
                 onAddChild={() => requirePin(() => { setEditChild(null); setShowChildSheet(true); })}
                 onToggleTask={handleTaskTap}
                 accent={theme.accent}
+                bg={theme.bg}
               />
             ) : view === "calendar" ? (
               <CalendarView
@@ -1041,31 +1042,35 @@ function TaskItem({ t, period, isBonus, whyOpen, onToggle, onOpenWhy, onViewPhot
   );
 }
 
-function ChildColumn({ child, periods, onOpenDetail, onToggleTask, whyOpen, setWhyOpen, setPhotoView, dayTotal, dayDone }) {
-  const bonusTask = child.tasks.find((t) => t.id === child.bonusTaskId && t.active !== false);
+function ChildHeaderCard({ child, onOpenDetail, dayTotal, dayDone }) {
   const total = dayTotal(child), done = dayDone(child);
   return (
-    <div className="flex flex-col gap-2">
-      <div onClick={() => onOpenDetail(child.id)} className="rounded-2xl p-2.5 flex items-center gap-2" style={{ background: "#FFFDF7", cursor: "pointer" }}>
-        <Avatar emoji={child.emoji} color={child.color} size={32} />
-        <div className="flex-1 min-w-0">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-xs truncate">{child.name}</p>
-          <p style={{ color: "#8A8360" }} className="text-[10px]">{done}/{total} tugas</p>
-        </div>
-        <div className="flex flex-col items-end gap-0.5 shrink-0">
-          <div className="flex items-center gap-0.5">
-            <Star size={10} color={GOLD} fill={GOLD} />
-            <span style={{ color: INK }} className="text-[10px] font-bold">{child.points}</span>
-          </div>
-          {child.streak > 0 && (
-            <div className="flex items-center gap-0.5">
-              <span style={{ fontSize: 9 }}>🔥</span>
-              <span style={{ color: "#FF6B4A" }} className="text-[10px] font-bold">{child.streak}</span>
-            </div>
-          )}
-        </div>
+    <div onClick={() => onOpenDetail(child.id)} className="rounded-2xl p-2.5 flex items-center gap-2" style={{ background: "#FFFDF7", cursor: "pointer" }}>
+      <Avatar emoji={child.emoji} color={child.color} size={32} />
+      <div className="flex-1 min-w-0">
+        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-xs truncate">{child.name}</p>
+        <p style={{ color: "#8A8360" }} className="text-[10px]">{done}/{total} tugas</p>
       </div>
+      <div className="flex flex-col items-end gap-0.5 shrink-0">
+        <div className="flex items-center gap-0.5">
+          <Star size={10} color={GOLD} fill={GOLD} />
+          <span style={{ color: INK }} className="text-[10px] font-bold">{child.points}</span>
+        </div>
+        {child.streak > 0 && (
+          <div className="flex items-center gap-0.5">
+            <span style={{ fontSize: 9 }}>🔥</span>
+            <span style={{ color: "#FF6B4A" }} className="text-[10px] font-bold">{child.streak}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
+function ChildTaskBody({ child, periods, onToggleTask, whyOpen, setWhyOpen, setPhotoView }) {
+  const bonusTask = child.tasks.find((t) => t.id === child.bonusTaskId && t.active !== false);
+  return (
+    <div className="flex flex-col gap-2">
       {bonusTask && !bonusTask.done && (
         <div className="rounded-xl px-2 py-1.5 flex items-center gap-1.5" style={{ background: GOLD }}>
           <span style={{ fontSize: 13 }}>🎲</span>
@@ -1136,7 +1141,7 @@ function PrayerTimesCard({ now, location }) {
   );
 }
 
-function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onToggleTask, accent }) {
+function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onToggleTask, accent, bg }) {
   const [whyOpen, setWhyOpen] = useState(null);
   const [photoView, setPhotoView] = useState(null);
   const upcoming = data.events
@@ -1146,40 +1151,68 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
 
   return (
     <div className="relative">
-      <div className="pt-2 pb-3 text-center">
-        {data.settings.familyName && (
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-xs uppercase tracking-wide mb-1">{data.settings.familyName}</p>
+      {/* FROZEN HEADER — stays pinned while only the task lists below scroll */}
+      <div className="sticky top-0 z-20 pb-2" style={{ background: bg }}>
+        <div className="pt-2 pb-3 text-center">
+          {data.settings.familyName && (
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-xs uppercase tracking-wide mb-1">{data.settings.familyName}</p>
+          )}
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 46, lineHeight: 1 }} className="font-extrabold tabular-nums">
+            {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
+          </p>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 18 }} className="font-bold mt-1">{formatDateID(now)}</p>
+        </div>
+
+        {upcoming.length > 0 && (
+          <div className="mb-4">
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Acara Mendatang</p>
+            <div className="flex flex-col gap-2">
+              {upcoming.map((e) => {
+                const who = e.who === "all" ? null : data.children.find((c) => c.id === e.who);
+                const dot = who ? who.color : INK;
+                const d = new Date(e.date + "T00:00:00");
+                return (
+                  <div key={e.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
+                    <div style={{ width: 8, height: 8, borderRadius: 999, background: dot }} />
+                    <div className="flex-1">
+                      <p style={{ color: INK }} className="text-xs font-bold">{e.title}</p>
+                      <p style={{ color: "#8A8360" }} className="text-[10px]">{DAY_SHORT[d.getDay()]}, {d.getDate()} {MONTH_NAMES[d.getMonth()]}{e.time ? ` · ${e.time}` : ""} {who ? `· ${who.name}` : "· Semua Keluarga"}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         )}
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 46, lineHeight: 1 }} className="font-extrabold tabular-nums">
-          {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
-        </p>
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 18 }} className="font-bold mt-1">{formatDateID(now)}</p>
+
+        <PrayerTimesCard now={now} location={data.location} />
+
+        {data.settings.leaderboardEnabled && data.children.length > 1 && (
+          <div className="mb-3">
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Papan Peringkat Minggu Ini</p>
+            <div className="flex flex-col gap-2">
+              {[...data.children].sort((a, b) => b.weeklyPoints - a.weeklyPoints).map((c, idx) => (
+                <div key={c.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
+                  <span style={{ width: 20, textAlign: "center", fontSize: 14 }}>{["🥇", "🥈", "🥉"][idx] || idx + 1}</span>
+                  <Avatar emoji={c.emoji} color={c.color} size={28} />
+                  <span style={{ color: INK }} className="text-xs font-bold flex-1">{c.name}</span>
+                  <span style={{ color: "#8A8360" }} className="text-xs font-semibold">{c.weeklyPoints} poin</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {data.children.length > 0 && (
+          <div className="grid grid-cols-2 gap-2.5">
+            {data.children.map((c) => (
+              <ChildHeaderCard key={c.id} child={c} onOpenDetail={onOpenChild} dayTotal={dayTotal} dayDone={dayDone} />
+            ))}
+          </div>
+        )}
       </div>
 
-      {upcoming.length > 0 && (
-        <div className="mb-4">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Acara Mendatang</p>
-          <div className="flex flex-col gap-2">
-            {upcoming.map((e) => {
-              const who = e.who === "all" ? null : data.children.find((c) => c.id === e.who);
-              const dot = who ? who.color : INK;
-              const d = new Date(e.date + "T00:00:00");
-              return (
-                <div key={e.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
-                  <div style={{ width: 8, height: 8, borderRadius: 999, background: dot }} />
-                  <div className="flex-1">
-                    <p style={{ color: INK }} className="text-xs font-bold">{e.title}</p>
-                    <p style={{ color: "#8A8360" }} className="text-[10px]">{DAY_SHORT[d.getDay()]}, {d.getDate()} {MONTH_NAMES[d.getMonth()]}{e.time ? ` · ${e.time}` : ""} {who ? `· ${who.name}` : "· Semua Keluarga"}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      <PrayerTimesCard now={now} location={data.location} />
-
+      {/* SCROLLING BODY — only the task lists move */}
       {data.children.length === 0 ? (
         <div className="mt-2 flex flex-col items-center text-center px-4 py-10 rounded-3xl" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
           <span style={{ fontSize: 40 }}>🧸</span>
@@ -1190,42 +1223,23 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5 mt-2">
           {data.children.map((c) => (
-            <ChildColumn
+            <ChildTaskBody
               key={c.id}
               child={c}
               periods={data.periods}
-              onOpenDetail={onOpenChild}
               onToggleTask={onToggleTask}
               whyOpen={whyOpen}
               setWhyOpen={setWhyOpen}
               setPhotoView={setPhotoView}
-              dayTotal={dayTotal}
-              dayDone={dayDone}
             />
           ))}
         </div>
       )}
 
-      {data.settings.leaderboardEnabled && data.children.length > 1 && (
-        <div className="mt-5">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Papan Peringkat Minggu Ini</p>
-          <div className="flex flex-col gap-2">
-            {[...data.children].sort((a, b) => b.weeklyPoints - a.weeklyPoints).map((c, idx) => (
-              <div key={c.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
-                <span style={{ width: 20, textAlign: "center", fontSize: 14 }}>{["🥇", "🥈", "🥉"][idx] || idx + 1}</span>
-                <Avatar emoji={c.emoji} color={c.color} size={28} />
-                <span style={{ color: INK }} className="text-xs font-bold flex-1">{c.name}</span>
-                <span style={{ color: "#8A8360" }} className="text-xs font-semibold">{c.weeklyPoints} poin</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {photoView && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center p-6" style={{ background: "rgba(27,37,89,0.9)" }} onClick={() => setPhotoView(null)}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-6" style={{ background: "rgba(27,37,89,0.9)" }} onClick={() => setPhotoView(null)}>
           <img src={photoView} alt="Bukti tugas" className="rounded-2xl" style={{ maxWidth: "100%", maxHeight: "80%", objectFit: "contain" }} />
         </div>
       )}
