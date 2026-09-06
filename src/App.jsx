@@ -1162,17 +1162,24 @@ function ChildHeaderCard({ child, onOpenDetail, dayTotal, dayDone }) {
         <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-xs truncate">{child.name}</p>
         <p style={{ color: "#8A8360" }} className="text-[10px]">{done}/{total} tugas</p>
       </div>
-      <div className="flex flex-col items-end gap-0.5 shrink-0">
-        <div className="flex items-center gap-0.5">
-          <Star size={10} color={GOLD} fill={GOLD} />
-          <span style={{ color: INK }} className="text-[10px] font-bold">{child.points}</span>
+      {child.streak > 0 && (
+        <div className="flex items-center gap-0.5 shrink-0">
+          <span style={{ fontSize: 11 }}>🔥</span>
+          <span style={{ color: "#FF6B4A" }} className="text-[10px] font-bold">{child.streak}</span>
         </div>
-        {child.streak > 0 && (
-          <div className="flex items-center gap-0.5">
-            <span style={{ fontSize: 9 }}>🔥</span>
-            <span style={{ color: "#FF6B4A" }} className="text-[10px] font-bold">{child.streak}</span>
-          </div>
-        )}
+      )}
+    </div>
+  );
+}
+
+/* Weekly and daily points shown with the same chip design, side by side. */
+function PointsChip({ label, value, color }) {
+  return (
+    <div className="flex-1 rounded-2xl px-2.5 py-1.5" style={{ background: "#FFFDF7" }}>
+      <p style={{ color: "#8A8360" }} className="text-[9px] font-semibold truncate">{label}</p>
+      <div className="flex items-center gap-1 mt-0.5">
+        <Star size={11} color={color} fill={color} />
+        <span style={{ color: INK }} className="text-xs font-extrabold">{value}</span>
       </div>
     </div>
   );
@@ -1297,33 +1304,12 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
         )}
 
         <PrayerTimesCard now={now} location={data.location} />
-
-        {data.settings.leaderboardEnabled && data.children.length > 1 && (
-          <div className="mb-3">
-            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Papan Peringkat Minggu Ini</p>
-            <div className="flex flex-col gap-2">
-              {[...data.children].sort((a, b) => b.weeklyPoints - a.weeklyPoints).map((c, idx) => (
-                <div key={c.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
-                  <span style={{ width: 20, textAlign: "center", fontSize: 14 }}>{["🥇", "🥈", "🥉"][idx] || idx + 1}</span>
-                  <Avatar emoji={c.emoji} color={c.color} size={28} />
-                  <span style={{ color: INK }} className="text-xs font-bold flex-1">{c.name}</span>
-                  <span style={{ color: "#8A8360" }} className="text-xs font-semibold">{c.weeklyPoints} poin</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {data.children.length > 0 && (
-          <div className="grid grid-cols-2 gap-2.5">
-            {data.children.map((c) => (
-              <ChildHeaderCard key={c.id} child={c} onOpenDetail={onOpenChild} dayTotal={dayTotal} dayDone={dayDone} />
-            ))}
-          </div>
-        )}
       </div>
 
-      {/* SCROLLING BODY — only the task lists move */}
+      {/* HORIZONTAL SCROLL AREA — starts right below the prayer times card.
+          Each child gets its own column (name/points sticky, tasks scroll
+          vertically); a 3rd child onward extends sideways instead of
+          wrapping, so the row scrolls left/right. */}
       {data.children.length === 0 ? (
         <div className="mt-2 flex flex-col items-center text-center px-4 py-10 rounded-3xl" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
           <span style={{ fontSize: 40 }}>🧸</span>
@@ -1334,18 +1320,30 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-2 gap-2.5 mt-2">
-          {data.children.map((c) => (
-            <ChildTaskBody
-              key={c.id}
-              child={c}
-              periods={data.periods}
-              onToggleTask={onToggleTask}
-              whyOpen={whyOpen}
-              setWhyOpen={setWhyOpen}
-              setPhotoView={setPhotoView}
-            />
-          ))}
+        <div className="overflow-x-auto app-scroll">
+          <div className="flex gap-2.5 mt-2 pb-1">
+            {data.children.map((c) => (
+              <div key={c.id} style={{ width: "calc(50vw - 21px)", flexShrink: 0 }}>
+                <div className="sticky top-0 z-10 pb-2" style={{ background: bg }}>
+                  <ChildHeaderCard child={c} onOpenDetail={onOpenChild} dayTotal={dayTotal} dayDone={dayDone} />
+                  {data.settings.leaderboardEnabled && (
+                    <div className="flex gap-1.5 mt-2">
+                      <PointsChip label="Poin Mingguan" value={c.weeklyPoints} color="#B8860B" />
+                      <PointsChip label="Poin Harian" value={c.points} color={GOLD} />
+                    </div>
+                  )}
+                </div>
+                <ChildTaskBody
+                  child={c}
+                  periods={data.periods}
+                  onToggleTask={onToggleTask}
+                  whyOpen={whyOpen}
+                  setWhyOpen={setWhyOpen}
+                  setPhotoView={setPhotoView}
+                />
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
