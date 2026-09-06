@@ -1268,9 +1268,9 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
     .slice(0, 3);
 
   return (
-    <div className="relative">
-      {/* FROZEN HEADER — stays pinned while only the task lists below scroll */}
-      <div className="sticky top-0 z-20 pb-2" style={{ background: bg }}>
+    <div className="relative h-full flex flex-col">
+      {/* TOP BLOCK — normal (non-scrolling) flow, sized to its own content */}
+      <div className="shrink-0">
         <div className="pt-2 pb-3 text-center">
           {data.settings.familyName && (
             <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-xs uppercase tracking-wide mb-1">{data.settings.familyName}</p>
@@ -1306,10 +1306,17 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
         <PrayerTimesCard now={now} location={data.location} />
       </div>
 
-      {/* HORIZONTAL SCROLL AREA — starts right below the prayer times card.
-          Each child gets its own column (name/points sticky, tasks scroll
-          vertically); a 3rd child onward extends sideways instead of
-          wrapping, so the row scrolls left/right. */}
+      {/* CHILDREN BOARD — starts right below the prayer times card and fills
+          the rest of the screen. The row itself scrolls horizontally (3rd
+          child onward extends sideways instead of wrapping); each column
+          scrolls its OWN task list vertically, independent of the others,
+          so a column's name/points header never moves.
+          (A column's header can't just be `position: sticky` inside the
+          horizontally-scrolling row: setting overflow-x on that row forces
+          its overflow-y to compute to `auto` too per the CSS spec, which
+          makes the row itself — not the page — the sticky containing
+          block; since the row never scrolls vertically on its own, the
+          "sticky" header would never visibly stick.) */}
       {data.children.length === 0 ? (
         <div className="mt-2 flex flex-col items-center text-center px-4 py-10 rounded-3xl" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
           <span style={{ fontSize: 40 }}>🧸</span>
@@ -1320,11 +1327,11 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
           </button>
         </div>
       ) : (
-        <div className="overflow-x-auto app-scroll">
-          <div className="flex gap-2.5 mt-2 pb-1">
+        <div className="flex-1 min-h-0 overflow-x-auto app-scroll">
+          <div className="flex gap-2.5 h-full pb-1">
             {data.children.map((c) => (
-              <div key={c.id} style={{ width: "calc(50vw - 21px)", flexShrink: 0 }}>
-                <div className="sticky top-0 z-10 pb-2" style={{ background: bg }}>
+              <div key={c.id} className="flex flex-col h-full" style={{ width: "calc(50vw - 21px)", flexShrink: 0 }}>
+                <div className="shrink-0 pb-2">
                   <ChildHeaderCard child={c} onOpenDetail={onOpenChild} dayTotal={dayTotal} dayDone={dayDone} />
                   {data.settings.leaderboardEnabled && (
                     <div className="flex gap-1.5 mt-2">
@@ -1333,14 +1340,16 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
                     </div>
                   )}
                 </div>
-                <ChildTaskBody
-                  child={c}
-                  periods={data.periods}
-                  onToggleTask={onToggleTask}
-                  whyOpen={whyOpen}
-                  setWhyOpen={setWhyOpen}
-                  setPhotoView={setPhotoView}
-                />
+                <div className="flex-1 min-h-0 overflow-y-auto app-scroll">
+                  <ChildTaskBody
+                    child={c}
+                    periods={data.periods}
+                    onToggleTask={onToggleTask}
+                    whyOpen={whyOpen}
+                    setWhyOpen={setWhyOpen}
+                    setPhotoView={setPhotoView}
+                  />
+                </div>
               </div>
             ))}
           </div>
