@@ -172,8 +172,8 @@ function mondayStr(d = new Date()) {
   date.setDate(date.getDate() + diff);
   return localDateStr(date);
 }
-function formatDateID(d) {
-  return `${DAY_NAMES[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()]} ${d.getFullYear()}`;
+function formatDateShortID(d) {
+  return `${DAY_SHORT[d.getDay()]}, ${d.getDate()} ${MONTH_NAMES[d.getMonth()].slice(0, 3)} ${d.getFullYear()}`;
 }
 function genId() {
   return crypto.randomUUID();
@@ -1284,28 +1284,28 @@ function ChildTaskBody({ child, periods, onToggleTask, whyOpen, setWhyOpen, setP
 function PrayerTimesCard({ now, location }) {
   if (!location) {
     return (
-      <div className="rounded-2xl px-3 py-2.5 mb-3 flex items-center gap-2" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
+      <div className="rounded-2xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
         <span style={{ fontSize: 16 }}>🕌</span>
         <p style={{ color: "#8A8360" }} className="text-[11px]">Aktifkan lokasi di Pengaturan untuk menampilkan jadwal shalat.</p>
       </div>
     );
   }
   const times = calcPrayerTimes(now.getFullYear(), now.getMonth() + 1, now.getDate(), location.lat, location.lon, -now.getTimezoneOffset() / 60);
-  const order = [["Subuh", times.subuh], ["Dzuhur", times.dzuhur], ["Ashar", times.ashar], ["Maghrib", times.maghrib], ["Isya", times.isya]];
+  const order = [["Sub", times.subuh], ["Dzu", times.dzuhur], ["Ash", times.ashar], ["Mag", times.maghrib], ["Isy", times.isya]];
   const nowHM = `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
   const nextIdx = order.findIndex(([, t]) => t && nowHM < t);
   return (
-    <div className="rounded-2xl p-2.5 mb-3" style={{ background: "#FFFDF7" }}>
-      <div className="flex items-center gap-1 mb-1.5 px-0.5">
-        <span style={{ fontSize: 13 }}>🕌</span>
-        <span style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xs font-bold">Jadwal Shalat Hari Ini</span>
-        {times.imsak && <span style={{ color: "#8A8360" }} className="text-[10px] ml-auto">Imsak {times.imsak}</span>}
+    <div className="rounded-2xl p-2" style={{ background: "#FFFDF7" }}>
+      <div className="flex items-center gap-1 mb-1 px-0.5">
+        <span style={{ fontSize: 11 }}>🕌</span>
+        <span style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[10px] font-bold">Jadwal Shalat</span>
+        {times.imsak && <span style={{ color: "#8A8360" }} className="text-[9px] ml-auto">Imsak {times.imsak}</span>}
       </div>
       <div className="grid grid-cols-5 gap-1">
         {order.map(([label, t], idx) => (
-          <div key={label} className="flex flex-col items-center rounded-xl py-1.5" style={{ background: idx === nextIdx ? INK : "#F1ECDB" }}>
-            <span style={{ color: idx === nextIdx ? "#fff" : "#8A8360" }} className="text-[9px] font-semibold">{label}</span>
-            <span style={{ color: idx === nextIdx ? "#fff" : INK }} className="text-[11px] font-bold">{t || "--:--"}</span>
+          <div key={label} className="flex flex-col items-center rounded-lg py-1" style={{ background: idx === nextIdx ? INK : "#F1ECDB" }}>
+            <span style={{ color: idx === nextIdx ? "#fff" : "#8A8360" }} className="text-[8px] font-semibold">{label}</span>
+            <span style={{ color: idx === nextIdx ? "#fff" : INK }} className="text-[10px] font-bold">{t || "--:--"}</span>
           </div>
         ))}
       </div>
@@ -1330,14 +1330,19 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
     <div className="relative h-full flex flex-col">
       {/* TOP BLOCK — normal (non-scrolling) flow, sized to its own content */}
       <div className="shrink-0">
-        <div className="pt-2 pb-3 text-center">
-          {data.settings.familyName && (
-            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-xs uppercase tracking-wide mb-1">{data.settings.familyName}</p>
-          )}
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 46, lineHeight: 1 }} className="font-extrabold tabular-nums">
-            {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
-          </p>
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 18 }} className="font-bold mt-1">{formatDateID(now)}</p>
+        {data.settings.familyName && (
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-xs uppercase tracking-wide text-center pt-2 mb-1">{data.settings.familyName}</p>
+        )}
+        <div className="flex items-center gap-2 pt-1 pb-3">
+          <div className="shrink-0 text-center" style={{ minWidth: 76 }}>
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 26, lineHeight: 1 }} className="font-extrabold tabular-nums">
+              {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
+            </p>
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360", fontSize: 9 }} className="font-bold mt-1">{formatDateShortID(now)}</p>
+          </div>
+          <div className="flex-1 min-w-0">
+            <PrayerTimesCard now={now} location={data.location} />
+          </div>
         </div>
 
         {upcoming.length > 0 && (
@@ -1386,8 +1391,6 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
             </div>
           </div>
         )}
-
-        <PrayerTimesCard now={now} location={data.location} />
       </div>
 
       {/* CHILDREN BOARD — starts right below the prayer times card and fills
