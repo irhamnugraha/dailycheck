@@ -31,7 +31,7 @@ function LoadingScreen() {
 }
 
 function LoginScreen() {
-  const [mode, setMode] = useState("signin"); // signin | signup
+  const [mode, setMode] = useState("signin"); // signin | signup | forgot
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -56,6 +56,27 @@ function LoginScreen() {
         if (error) throw error;
         setInfo("Akun dibuat. Cek email kamu untuk konfirmasi, lalu masuk.");
       }
+    } catch (err) {
+      setError(err.message || "Terjadi kesalahan.");
+    }
+    setLoading(false);
+  }
+
+  async function handleForgotPassword(e) {
+    e.preventDefault();
+    setError("");
+    setInfo("");
+    if (!email.trim()) {
+      setError("Isi email kamu dulu.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+        redirectTo: window.location.origin + window.location.pathname,
+      });
+      if (error) throw error;
+      setInfo("Link reset password sudah dikirim. Cek email kamu (termasuk folder spam).");
     } catch (err) {
       setError(err.message || "Terjadi kesalahan.");
     }
@@ -91,45 +112,195 @@ function LoginScreen() {
         </div>
 
         <div className="rounded-3xl p-5" style={{ background: "#FFFDF7", border: "2px solid #EFE6CE" }}>
-          <div className="flex rounded-full p-1 mb-4" style={{ background: "#F1ECDB" }}>
-            <button
-              onClick={() => { setMode("signin"); setError(""); setInfo(""); }}
-              className="flex-1 py-1.5 rounded-full text-xs font-bold"
-              style={mode === "signin" ? { background: INK, color: "#fff" } : { color: "#8A8360" }}
-            >
-              Masuk
-            </button>
-            <button
-              onClick={() => { setMode("signup"); setError(""); setInfo(""); }}
-              className="flex-1 py-1.5 rounded-full text-xs font-bold"
-              style={mode === "signup" ? { background: INK, color: "#fff" } : { color: "#8A8360" }}
-            >
-              Daftar
-            </button>
-          </div>
+          {mode !== "forgot" && (
+            <div className="flex rounded-full p-1 mb-4" style={{ background: "#F1ECDB" }}>
+              <button
+                onClick={() => { setMode("signin"); setError(""); setInfo(""); }}
+                className="flex-1 py-1.5 rounded-full text-xs font-bold"
+                style={mode === "signin" ? { background: INK, color: "#fff" } : { color: "#8A8360" }}
+              >
+                Masuk
+              </button>
+              <button
+                onClick={() => { setMode("signup"); setError(""); setInfo(""); }}
+                className="flex-1 py-1.5 rounded-full text-xs font-bold"
+                style={mode === "signup" ? { background: INK, color: "#fff" } : { color: "#8A8360" }}
+              >
+                Daftar
+              </button>
+            </div>
+          )}
 
-          <form onSubmit={handleEmailAuth} className="flex flex-col gap-2.5">
+          {mode === "forgot" ? (
+            <form onSubmit={handleForgotPassword} className="flex flex-col gap-2.5">
+              <p style={{ color: "#8A8360" }} className="text-xs mb-1">Masukkan email akun kamu, nanti dikirimkan link untuk membuat password baru.</p>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Email"
+                autoComplete="email"
+                className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                style={{ background: "#F1ECDB", color: INK }}
+              />
+
+              {error && <p style={{ color: DANGER }} className="text-xs font-semibold">{error}</p>}
+              {info && <p style={{ color: "#3A8F4A" }} className="text-xs font-semibold">{info}</p>}
+
+              <button
+                type="submit"
+                disabled={loading}
+                style={{ background: GOLD, color: INK }}
+                className="w-full rounded-xl py-2.5 text-sm font-extrabold mt-1"
+              >
+                {loading ? "Mengirim…" : "Kirim Link Reset"}
+              </button>
+              <button
+                type="button"
+                onClick={() => { setMode("signin"); setError(""); setInfo(""); }}
+                className="text-xs font-bold text-center mt-1"
+                style={{ color: INK }}
+              >
+                ← Kembali ke Masuk
+              </button>
+            </form>
+          ) : (
+            <>
+              <form onSubmit={handleEmailAuth} className="flex flex-col gap-2.5">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Email"
+                  autoComplete="email"
+                  className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                  style={{ background: "#F1ECDB", color: INK }}
+                />
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password"
+                  autoComplete={mode === "signin" ? "current-password" : "new-password"}
+                  className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                  style={{ background: "#F1ECDB", color: INK }}
+                />
+
+                {mode === "signin" && (
+                  <button
+                    type="button"
+                    onClick={() => { setMode("forgot"); setError(""); setInfo(""); }}
+                    className="text-[11px] font-bold text-right -mt-1"
+                    style={{ color: "#8A8360" }}
+                  >
+                    Lupa password?
+                  </button>
+                )}
+
+                {error && <p style={{ color: DANGER }} className="text-xs font-semibold">{error}</p>}
+                {info && <p style={{ color: "#3A8F4A" }} className="text-xs font-semibold">{info}</p>}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  style={{ background: GOLD, color: INK }}
+                  className="w-full rounded-xl py-2.5 text-sm font-extrabold mt-1"
+                >
+                  {loading ? "Memproses…" : mode === "signin" ? "Masuk" : "Buat Akun"}
+                </button>
+              </form>
+
+              <div className="flex items-center gap-2 my-4">
+                <div className="flex-1 h-px" style={{ background: "#EFE6CE" }} />
+                <span style={{ color: "#8A8360" }} className="text-[10px] font-semibold">ATAU</span>
+                <div className="flex-1 h-px" style={{ background: "#EFE6CE" }} />
+              </div>
+
+              <button
+                onClick={handleGoogle}
+                className="w-full rounded-xl py-2.5 text-sm font-bold flex items-center justify-center gap-2"
+                style={{ background: "#fff", color: INK, border: "1px solid #E3D9B4" }}
+              >
+                <GoogleIcon />
+                Lanjutkan dengan Google
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ResetPasswordScreen({ onDone }) {
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError("");
+    if (password.length < 6) {
+      setError("Password minimal 6 karakter.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setError("Konfirmasi password tidak cocok.");
+      return;
+    }
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password });
+      if (error) throw error;
+      onDone();
+    } catch (err) {
+      setError(err.message || "Terjadi kesalahan.");
+    }
+    setLoading(false);
+  }
+
+  return (
+    <div
+      className="app-font flex items-center justify-center px-6"
+      style={{ width: "100vw", height: "100vh", background: "#FFF4D6" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        .app-font * { font-family: 'Plus Jakarta Sans', sans-serif; }
+      `}</style>
+
+      <div className="w-full" style={{ maxWidth: 360 }}>
+        <div className="text-center mb-6">
+          <span style={{ fontSize: 40 }}>🔑</span>
+          <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold mt-2">
+            Buat Password Baru
+          </h1>
+          <p style={{ color: "#8A8360" }} className="text-xs mt-1">Masukkan password baru untuk akun kamu.</p>
+        </div>
+
+        <div className="rounded-3xl p-5" style={{ background: "#FFFDF7", border: "2px solid #EFE6CE" }}>
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2.5">
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              autoComplete="email"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Password baru"
+              autoComplete="new-password"
               className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Password"
-              autoComplete={mode === "signin" ? "current-password" : "new-password"}
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Ulangi password baru"
+              autoComplete="new-password"
               className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
 
             {error && <p style={{ color: DANGER }} className="text-xs font-semibold">{error}</p>}
-            {info && <p style={{ color: "#3A8F4A" }} className="text-xs font-semibold">{info}</p>}
 
             <button
               type="submit"
@@ -137,24 +308,9 @@ function LoginScreen() {
               style={{ background: GOLD, color: INK }}
               className="w-full rounded-xl py-2.5 text-sm font-extrabold mt-1"
             >
-              {loading ? "Memproses…" : mode === "signin" ? "Masuk" : "Buat Akun"}
+              {loading ? "Menyimpan…" : "Simpan Password"}
             </button>
           </form>
-
-          <div className="flex items-center gap-2 my-4">
-            <div className="flex-1 h-px" style={{ background: "#EFE6CE" }} />
-            <span style={{ color: "#8A8360" }} className="text-[10px] font-semibold">ATAU</span>
-            <div className="flex-1 h-px" style={{ background: "#EFE6CE" }} />
-          </div>
-
-          <button
-            onClick={handleGoogle}
-            className="w-full rounded-xl py-2.5 text-sm font-bold flex items-center justify-center gap-2"
-            style={{ background: "#fff", color: INK, border: "1px solid #E3D9B4" }}
-          >
-            <GoogleIcon />
-            Lanjutkan dengan Google
-          </button>
         </div>
       </div>
     </div>
@@ -163,16 +319,19 @@ function LoginScreen() {
 
 export default function AuthGate() {
   const [session, setSession] = useState(undefined); // undefined = checking, null = signed out
+  const [recovery, setRecovery] = useState(false);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => setSession(data.session ?? null));
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === "PASSWORD_RECOVERY") setRecovery(true);
       setSession(session);
     });
     return () => listener.subscription.unsubscribe();
   }, []);
 
   if (session === undefined) return <LoadingScreen />;
+  if (recovery) return <ResetPasswordScreen onDone={() => setRecovery(false)} />;
   if (!session) return <LoginScreen />;
   return <App session={session} />;
 }
