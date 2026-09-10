@@ -813,7 +813,7 @@ export default function FamilyRoutineApp({ session }) {
     setData((prev) => ({ ...prev, pin: p }));
   }
   function addHomeItem(item) {
-    setData((prev) => ({ ...prev, homeItems: [...prev.homeItems, { ...item, id: genId(), lastDoneDate: localDateStr() }] }));
+    setData((prev) => ({ ...prev, homeItems: [...prev.homeItems, { ...item, id: genId(), lastDoneDate: item.lastDoneDate || localDateStr() }] }));
   }
   function updateHomeItem(id, patch) {
     setData((prev) => ({ ...prev, homeItems: prev.homeItems.map((h) => (h.id === id ? { ...h, ...patch } : h)) }));
@@ -2491,6 +2491,7 @@ const HOME_ITEM_ICONS = [
 function HomeItemCard({ item, onMarkDone, onEdit, onDelete }) {
   const { nextDueStr, daysUntil, overdue, dueToday } = getHomeItemStatus(item, localDateStr());
   const d = new Date(nextDueStr + "T00:00:00");
+  const lastDone = new Date(item.lastDoneDate + "T00:00:00");
   let statusText, statusColor;
   if (overdue) {
     statusText = `Terlambat ${Math.abs(daysUntil)} hari`;
@@ -2509,7 +2510,7 @@ function HomeItemCard({ item, onMarkDone, onEdit, onDelete }) {
         <div className="flex-1 min-w-0">
           <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm truncate">{item.name} <span style={{ color: "#8A8360", fontWeight: 600, fontSize: 11 }}>({item.quantity} pcs)</span></p>
           <p style={{ color: statusColor }} className="text-[11px] font-bold mt-0.5">{statusText}</p>
-          <p style={{ color: "#8A8360" }} className="text-[10px] mt-0.5">Jatuh tempo: {d.getDate()} {MONTH_NAMES[d.getMonth()]} · tiap {item.intervalDays} hari</p>
+          <p style={{ color: "#8A8360" }} className="text-[10px] mt-0.5">Terakhir: {lastDone.getDate()} {MONTH_NAMES[lastDone.getMonth()]} · Jatuh tempo: {d.getDate()} {MONTH_NAMES[d.getMonth()]} · tiap {item.intervalDays} hari</p>
         </div>
         <div className="flex flex-col items-end gap-1.5 shrink-0">
           <button onClick={() => onEdit(item)} className="p-1.5 rounded-full" style={{ background: "#F1ECDB" }}>
@@ -2568,8 +2569,8 @@ function HomeItemSheet({ initial, onClose, onSave }) {
   const isNew = !initial;
   const [form, setForm] = useState(() =>
     initial
-      ? { name: initial.name, quantity: initial.quantity, emoji: initial.emoji, color: initial.color, intervalDays: initial.intervalDays }
-      : { name: "", quantity: 1, emoji: HOME_ITEM_ICONS[0], color: PALETTE_COLORS[0], intervalDays: 30 }
+      ? { name: initial.name, quantity: initial.quantity, emoji: initial.emoji, color: initial.color, intervalDays: initial.intervalDays, lastDoneDate: initial.lastDoneDate }
+      : { name: "", quantity: 1, emoji: HOME_ITEM_ICONS[0], color: PALETTE_COLORS[0], intervalDays: 30, lastDoneDate: localDateStr() }
   );
   return (
     <Sheet title={isNew ? "Tambah Item Rumah" : "Edit Item Rumah"} onClose={onClose}>
@@ -2623,6 +2624,19 @@ function HomeItemSheet({ initial, onClose, onSave }) {
               style={{ background: "#F1ECDB", color: INK }}
             />
           </div>
+        </div>
+
+        <div>
+          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Terakhir Dilakukan</label>
+          <input
+            type="date"
+            value={form.lastDoneDate}
+            max={localDateStr()}
+            onChange={(e) => setForm({ ...form, lastDoneDate: e.target.value })}
+            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            style={{ background: "#F1ECDB", color: INK }}
+          />
+          <p style={{ color: "#8A8360" }} className="text-[10px] mt-1">Dipakai untuk menghitung kapan jatuh tempo berikutnya. Ubah kalau sudah dilakukan sebelum hari ini.</p>
         </div>
 
         <button onClick={() => onSave(form)} disabled={!form.name.trim()} className="rounded-xl py-3 text-sm font-bold text-white mt-1" style={{ background: form.name.trim() ? "#00B8A9" : "#C9BE93" }}>
