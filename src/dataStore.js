@@ -12,16 +12,17 @@ import { DEFAULT_PERIODS } from "./constants";
  */
 
 export async function loadFromSupabase() {
-  const [settingsRes, periodsRes, childrenRes, tasksRes, eventsRes, violationsRes] = await Promise.all([
+  const [settingsRes, periodsRes, childrenRes, tasksRes, eventsRes, violationsRes, homeItemsRes] = await Promise.all([
     supabase.from("app_settings").select("*").eq("id", 1).maybeSingle(),
     supabase.from("periods").select("*").order("sort_order"),
     supabase.from("children").select("*").order("sort_order"),
     supabase.from("tasks").select("*").order("sort_order"),
     supabase.from("events").select("*"),
     supabase.from("violations").select("*"),
+    supabase.from("home_items").select("*").order("sort_order"),
   ]);
 
-  const errors = [settingsRes, periodsRes, childrenRes, tasksRes, eventsRes, violationsRes]
+  const errors = [settingsRes, periodsRes, childrenRes, tasksRes, eventsRes, violationsRes, homeItemsRes]
     .map((r) => r.error)
     .filter(Boolean);
   if (errors.length > 0) throw errors[0];
@@ -32,6 +33,7 @@ export async function loadFromSupabase() {
   const tasksRows = tasksRes.data || [];
   const eventsRows = eventsRes.data || [];
   const violationsRows = violationsRes.data || [];
+  const homeItemsRows = homeItemsRes.data || [];
 
   const tasksByChild = {};
   tasksRows.forEach((t) => {
@@ -107,10 +109,21 @@ export async function loadFromSupabase() {
     notified: e.notified,
   }));
 
+  const homeItems = homeItemsRows.map((h) => ({
+    id: h.id,
+    name: h.name,
+    quantity: h.quantity,
+    emoji: h.emoji,
+    color: h.color,
+    intervalDays: h.interval_days,
+    lastDoneDate: h.last_done_date,
+  }));
+
   return {
     children,
     events,
     periods,
+    homeItems,
     pin: settingsRow ? settingsRow.pin : "1234",
     settings: {
       leaderboardEnabled: settingsRow ? settingsRow.leaderboard_enabled : true,
@@ -248,5 +261,24 @@ export async function saveToSupabase(data) {
   if (allViolations.length > 0) {
     const { error: insViolationsErr } = await supabase.from("violations").insert(allViolations);
     if (insViolationsErr) throw insViolationsErr;
+  }
+
+  // 8. home_items (full replace, independent table)
+  const { error: delHomeItemsErr } = await supabase.from("home_items").delete().not("id", "is", null);
+  if (delHomeItemsErr) throw delHomeItemsErr;
+  if (data.homeItems.length > 0) {
+    const { error: insHomeItemsErr } = await supabase.from("home_items").insert(
+      data.homeItems.map((h, i) => ({
+        id: h.id,
+        name: h.name,
+        quantity: h.quantity,
+        emoji: h.emoji,
+        color: h.color,
+        interval_days: h.intervalDays,
+        last_done_date: h.lastDoneDate,
+        sort_order: i,
+      }))
+    );
+    if (insHomeItemsErr) throw insHomeItemsErr;
   }
 }

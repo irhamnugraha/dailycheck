@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   Home, CalendarDays, Settings as SettingsIcon, Plus, X, Check, Star,
   Lock, ChevronLeft, ChevronRight, Award, Trash2, Pencil,
-  ArrowLeft, Users, Bell, GripVertical, ChevronUp, ChevronDown
+  ArrowLeft, Users, Bell, GripVertical, ChevronUp, ChevronDown, Sparkles
 } from "lucide-react";
 import { loadFromSupabase, saveToSupabase } from "./dataStore";
 import { supabase } from "./supabaseClient";
@@ -180,6 +180,15 @@ function isNextDay(prevStr, todayStr) {
   const today = new Date(todayStr + "T00:00:00");
   return Math.round((today - prev) / 86400000) === 1;
 }
+function getHomeItemStatus(item, todayStr) {
+  const last = new Date(item.lastDoneDate + "T00:00:00");
+  const next = new Date(last);
+  next.setDate(next.getDate() + item.intervalDays);
+  const nextDueStr = localDateStr(next);
+  const today = new Date(todayStr + "T00:00:00");
+  const daysUntil = Math.round((next - today) / 86400000);
+  return { nextDueStr, daysUntil, overdue: daysUntil < 0, dueToday: daysUntil === 0 };
+}
 function getDayCompletion(child, dateStr, todayStr) {
   if (dateStr === todayStr) {
     const total = child.tasks.filter((t) => t.active !== false).length;
@@ -280,6 +289,7 @@ function initialData() {
   return {
     children: [],
     events: [],
+    homeItems: [],
     pin: "1234",
     lastActiveDate: localDateStr(),
     weekStart: mondayStr(),
@@ -586,6 +596,8 @@ export default function FamilyRoutineApp({ session }) {
   const [pinAction, setPinAction] = useState(null);
   const [editChild, setEditChild] = useState(null);
   const [showChildSheet, setShowChildSheet] = useState(false);
+  const [editHomeItem, setEditHomeItem] = useState(null);
+  const [showHomeItemSheet, setShowHomeItemSheet] = useState(false);
   const [confirmDeleteChild, setConfirmDeleteChild] = useState(null);
   const [calMonth, setCalMonth] = useState(new Date());
   const [selectedDay, setSelectedDay] = useState(localDateStr());
@@ -796,6 +808,18 @@ export default function FamilyRoutineApp({ session }) {
   function changePin(p) {
     setData((prev) => ({ ...prev, pin: p }));
   }
+  function addHomeItem(item) {
+    setData((prev) => ({ ...prev, homeItems: [...prev.homeItems, { ...item, id: genId(), lastDoneDate: localDateStr() }] }));
+  }
+  function updateHomeItem(id, patch) {
+    setData((prev) => ({ ...prev, homeItems: prev.homeItems.map((h) => (h.id === id ? { ...h, ...patch } : h)) }));
+  }
+  function deleteHomeItem(id) {
+    setData((prev) => ({ ...prev, homeItems: prev.homeItems.filter((h) => h.id !== id) }));
+  }
+  function markHomeItemDone(id) {
+    setData((prev) => ({ ...prev, homeItems: prev.homeItems.map((h) => (h.id === id ? { ...h, lastDoneDate: localDateStr() } : h)) }));
+  }
   function updatePeriod(key, patch) {
     setData((prev) => ({ ...prev, periods: prev.periods.map((p) => (p.key === key ? { ...p, ...patch } : p)) }));
   }
@@ -944,6 +968,8 @@ export default function FamilyRoutineApp({ session }) {
                 onToggleTask={handleTaskTap}
                 accent={theme.accent}
                 bg={theme.bg}
+                onMarkHomeItemDone={markHomeItemDone}
+                onGoHome={() => setView("home")}
               />
             ) : view === "calendar" ? (
               <CalendarView
@@ -959,6 +985,14 @@ export default function FamilyRoutineApp({ session }) {
                   setShowEventSheet(true);
                 })}
                 onDeleteEvent={(id) => requirePin(() => deleteEvent(id))}
+              />
+            ) : view === "home" ? (
+              <HomeView
+                homeItems={data.homeItems}
+                onMarkDone={markHomeItemDone}
+                onAdd={() => requirePin(() => { setEditHomeItem(null); setShowHomeItemSheet(true); })}
+                onEdit={(h) => requirePin(() => { setEditHomeItem(h); setShowHomeItemSheet(true); })}
+                onDelete={(id) => requirePin(() => deleteHomeItem(id))}
               />
             ) : (
               <SettingsView
@@ -1005,6 +1039,7 @@ export default function FamilyRoutineApp({ session }) {
           <div className="flex justify-around items-center px-2 py-3 shrink-0" style={{ background: "#FFFDF7", borderTop: "1px solid #EFE6CE" }}>
             <NavBtn active={view === "dashboard" && !selectedChild} icon={Home} label="Beranda" accent={theme.accent} onClick={() => { setSelectedChildId(null); setView("dashboard"); }} />
             <NavBtn active={view === "calendar" && !selectedChild} icon={CalendarDays} label="Kalender" accent={theme.accent} onClick={() => { setSelectedChildId(null); setView("calendar"); }} />
+            <NavBtn active={view === "home" && !selectedChild} icon={Sparkles} label="Rumah" accent={theme.accent} onClick={() => { setSelectedChildId(null); setView("home"); }} />
             <NavBtn
               active={view === "settings" && !selectedChild}
               icon={SettingsIcon}
@@ -1085,6 +1120,21 @@ export default function FamilyRoutineApp({ session }) {
                 addViolation(newViolation.childId, newViolation.note.trim(), newViolation.points);
                 setShowViolationSheet(false);
                 setNewViolation({ childId: null, note: "", points: 10 });
+              }}
+            />
+          )}
+
+          {showHomeItemSheet && (
+            <HomeItemSheet
+              initial={editHomeItem}
+              onClose={() => setShowHomeItemSheet(false)}
+              onSave={(form) => {
+                if (editHomeItem) {
+                  updateHomeItem(editHomeItem.id, form);
+                } else {
+                  addHomeItem(form);
+                }
+                setShowHomeItemSheet(false);
               }}
             />
           )}
@@ -1259,13 +1309,18 @@ function PrayerTimesCard({ now, location }) {
   );
 }
 
-function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onToggleTask, accent, bg }) {
+function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onToggleTask, accent, bg, onMarkHomeItemDone, onGoHome }) {
   const [whyOpen, setWhyOpen] = useState(null);
   const [photoView, setPhotoView] = useState(null);
+  const todayStr = localDateStr();
   const upcoming = data.events
-    .filter((e) => e.date >= localDateStr())
+    .filter((e) => e.date >= todayStr)
     .sort((a, b) => a.date.localeCompare(b.date))
     .slice(0, 3);
+  const dueHomeItems = data.homeItems
+    .map((h) => ({ item: h, status: getHomeItemStatus(h, todayStr) }))
+    .filter(({ status }) => status.daysUntil <= 3)
+    .sort((a, b) => a.status.daysUntil - b.status.daysUntil);
 
   return (
     <div className="relative h-full flex flex-col">
@@ -1299,6 +1354,31 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
                   </div>
                 );
               })}
+            </div>
+          </div>
+        )}
+
+        {dueHomeItems.length > 0 && (
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-2">
+              <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">Perlu Diperhatikan di Rumah</p>
+              <button onClick={onGoHome} style={{ color: "#00B8A9" }} className="text-[11px] font-bold">Lihat Semua</button>
+            </div>
+            <div className="flex flex-col gap-2">
+              {dueHomeItems.map(({ item, status }) => (
+                <div key={item.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
+                  <div className="rounded-full flex items-center justify-center shrink-0" style={{ width: 28, height: 28, background: item.color, fontSize: 13 }}>{item.emoji}</div>
+                  <div className="flex-1 min-w-0">
+                    <p style={{ color: INK }} className="text-xs font-bold truncate">{item.name}</p>
+                    <p style={{ color: status.overdue ? DANGER : "#8A8360" }} className="text-[10px] font-semibold">
+                      {status.overdue ? `Terlambat ${Math.abs(status.daysUntil)} hari` : status.dueToday ? "Jatuh tempo hari ini" : `${status.daysUntil} hari lagi`}
+                    </p>
+                  </div>
+                  <button onClick={() => onMarkHomeItemDone(item.id)} className="shrink-0 rounded-full px-2.5 py-1.5 text-[10px] font-bold text-white" style={{ background: "#00B8A9" }}>
+                    Selesai
+                  </button>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -2389,6 +2469,157 @@ function EventSheet({ day, children, value, setValue, isEditing, onClose, onSave
         </div>
         <button onClick={onSave} disabled={!value.title.trim()} className="rounded-xl py-3 text-sm font-bold text-white mt-1" style={{ background: value.title.trim() ? "#00B8A9" : "#C9BE93" }}>
           {isEditing ? "Simpan Perubahan" : "Simpan Acara"}
+        </button>
+      </div>
+    </Sheet>
+  );
+}
+
+/* ---------- Home Tracker ---------- */
+const HOME_ITEM_ICONS = [
+  "🧺", "🪥", "🛏️", "🧴", "🧹", "🧽", "🧻", "🚿", "🧼", "🪒",
+  "🧯", "🧊", "🔋", "🧦", "🩹", "🗑️", "🪣", "🚰", "🕯️", "🧤",
+];
+
+function HomeItemCard({ item, onMarkDone, onEdit, onDelete }) {
+  const { nextDueStr, daysUntil, overdue, dueToday } = getHomeItemStatus(item, localDateStr());
+  const d = new Date(nextDueStr + "T00:00:00");
+  let statusText, statusColor;
+  if (overdue) {
+    statusText = `Terlambat ${Math.abs(daysUntil)} hari`;
+    statusColor = DANGER;
+  } else if (dueToday) {
+    statusText = "Jatuh tempo hari ini";
+    statusColor = "#D9A24E";
+  } else {
+    statusText = `${daysUntil} hari lagi`;
+    statusColor = "#8A8360";
+  }
+  return (
+    <div className="rounded-3xl p-3" style={{ background: "#FFFDF7", border: overdue ? `2px solid ${DANGER}` : "2px solid transparent" }}>
+      <div className="flex items-center gap-2.5">
+        <div className="rounded-full flex items-center justify-center shrink-0" style={{ width: 40, height: 40, background: item.color, fontSize: 18 }}>{item.emoji}</div>
+        <div className="flex-1 min-w-0">
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm truncate">{item.name} <span style={{ color: "#8A8360", fontWeight: 600, fontSize: 11 }}>({item.quantity} pcs)</span></p>
+          <p style={{ color: statusColor }} className="text-[11px] font-bold mt-0.5">{statusText}</p>
+          <p style={{ color: "#8A8360" }} className="text-[10px] mt-0.5">Jatuh tempo: {d.getDate()} {MONTH_NAMES[d.getMonth()]} · tiap {item.intervalDays} hari</p>
+        </div>
+        <div className="flex flex-col items-end gap-1.5 shrink-0">
+          <button onClick={() => onEdit(item)} className="p-1.5 rounded-full" style={{ background: "#F1ECDB" }}>
+            <Pencil size={11} color={INK} />
+          </button>
+          <button onClick={() => onDelete(item.id)} className="p-1.5 rounded-full" style={{ background: "#F1ECDB" }}>
+            <Trash2 size={11} color={DANGER} />
+          </button>
+        </div>
+      </div>
+      <button onClick={() => onMarkDone(item.id)} className="w-full mt-2.5 rounded-xl py-2 text-xs font-bold text-white flex items-center justify-center gap-1.5" style={{ background: "#00B8A9" }}>
+        <Check size={14} strokeWidth={3} /> Tandai Selesai
+      </button>
+    </div>
+  );
+}
+
+function HomeView({ homeItems, onMarkDone, onAdd, onEdit, onDelete }) {
+  const todayStr = localDateStr();
+  const sorted = [...homeItems].sort((a, b) => {
+    const sa = getHomeItemStatus(a, todayStr).daysUntil;
+    const sb = getHomeItemStatus(b, todayStr).daysUntil;
+    return sa - sb;
+  });
+  return (
+    <div>
+      <div className="flex items-center justify-between pt-2 pb-3">
+        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold">Rumah</h1>
+        <button onClick={onAdd} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-white" style={{ background: "#00B8A9" }}>
+          <Plus size={14} /> Tambah
+        </button>
+      </div>
+      <p style={{ color: "#8A8360" }} className="text-[11px] mb-3">Pengingat rutinitas rumah tangga — cuci handuk, ganti sikat gigi, ganti seprai, dsb. Siapa saja bisa menandai selesai.</p>
+
+      {sorted.length === 0 ? (
+        <div className="flex flex-col items-center text-center px-4 py-10 rounded-3xl" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
+          <span style={{ fontSize: 40 }}>🏠</span>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold mt-2">Belum ada pengingat rumah</p>
+          <p style={{ color: "#8A8360" }} className="text-sm mt-1 mb-4">Tambahkan barang yang perlu dicuci/diganti berkala.</p>
+          <button onClick={onAdd} style={{ background: "#00B8A9" }} className="px-5 py-2.5 rounded-full text-white font-bold text-sm flex items-center gap-1">
+            <Plus size={16} /> Tambah Item
+          </button>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2.5">
+          {sorted.map((item) => (
+            <HomeItemCard key={item.id} item={item} onMarkDone={onMarkDone} onEdit={onEdit} onDelete={onDelete} />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function HomeItemSheet({ initial, onClose, onSave }) {
+  const isNew = !initial;
+  const [form, setForm] = useState(() =>
+    initial
+      ? { name: initial.name, quantity: initial.quantity, emoji: initial.emoji, color: initial.color, intervalDays: initial.intervalDays }
+      : { name: "", quantity: 1, emoji: HOME_ITEM_ICONS[0], color: PALETTE_COLORS[0], intervalDays: 30 }
+  );
+  return (
+    <Sheet title={isNew ? "Tambah Item Rumah" : "Edit Item Rumah"} onClose={onClose}>
+      <div className="flex flex-col gap-4">
+        <div>
+          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Nama</label>
+          <input
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            placeholder="misal: Cuci Handuk"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            style={{ background: "#F1ECDB", color: INK }}
+          />
+        </div>
+
+        <div className="flex items-center gap-4">
+          <div>
+            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Ikon</label>
+            <div className="mt-1.5">
+              <IconPickerButton value={form.emoji} options={HOME_ITEM_ICONS} activeColor={form.color} onChange={(em) => setForm({ ...form, emoji: em })} size={44} />
+            </div>
+          </div>
+          <div>
+            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Warna</label>
+            <div className="mt-1.5">
+              <ColorPickerButton value={form.color} options={PALETTE_COLORS} onChange={(c) => setForm({ ...form, color: c })} size={38} />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <div className="flex-1">
+            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Jumlah (pcs)</label>
+            <input
+              type="number"
+              min={1}
+              value={form.quantity}
+              onChange={(e) => setForm({ ...form, quantity: Math.max(1, Number(e.target.value) || 1) })}
+              className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+              style={{ background: "#F1ECDB", color: INK }}
+            />
+          </div>
+          <div className="flex-1">
+            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Setiap berapa hari</label>
+            <input
+              type="number"
+              min={1}
+              value={form.intervalDays}
+              onChange={(e) => setForm({ ...form, intervalDays: Math.max(1, Number(e.target.value) || 1) })}
+              className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+              style={{ background: "#F1ECDB", color: INK }}
+            />
+          </div>
+        </div>
+
+        <button onClick={() => onSave(form)} disabled={!form.name.trim()} className="rounded-xl py-3 text-sm font-bold text-white mt-1" style={{ background: form.name.trim() ? "#00B8A9" : "#C9BE93" }}>
+          {isNew ? "Simpan Item" : "Simpan Perubahan"}
         </button>
       </div>
     </Sheet>
