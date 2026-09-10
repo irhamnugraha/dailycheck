@@ -129,9 +129,13 @@ const DEFAULT_TEMPLATE = [
   { id: "t17", time: "siang", label: "Qobliyah ashar", emoji: "🕌", why: "Mengisi waktu sebelum ashar dengan ibadah tambahan." },
   { id: "t18", time: "siang", label: "Shalat Ashar", emoji: "🕌", why: "Ashar adalah shalat pertengahan yang sangat dijaga keutamaannya." },
   { id: "t19", time: "malam", label: "Mandi sore", emoji: "🚿", why: "Badan bersih dan segar sebelum beraktivitas malam." },
+  { id: "t19b", time: "malam", label: "Qobliyah Maghrib", emoji: "🕌", why: "Shalat sunnah sebelum maghrib mengisi waktu dengan ibadah tambahan." },
   { id: "t20", time: "malam", label: "Solat Maghrib", emoji: "🕌", why: "Waktu maghrib singkat, jadi penting shalat begitu masuk waktunya." },
+  { id: "t20b", time: "malam", label: "Badiyah Maghrib", emoji: "🕌", why: "Shalat sunnah setelah maghrib menyempurnakan ibadah wajib." },
   { id: "t21", time: "malam", label: "Makan malam", emoji: "🍚", why: "Makan malam menjaga energi tubuh untuk istirahat yang baik." },
+  { id: "t21b", time: "malam", label: "Qobliyah Isya", emoji: "🕌", why: "Shalat sunnah sebelum isya mengisi waktu dengan ibadah tambahan." },
   { id: "t22", time: "malam", label: "Solat Isya", emoji: "🕌", why: "Menutup ibadah shalat wajib di hari itu." },
+  { id: "t22b", time: "malam", label: "Badiyah Isya", emoji: "🕌", why: "Shalat sunnah setelah isya menutup ibadah wajib hari itu." },
   { id: "t23", time: "malam", label: "Sikat gigi malam", emoji: "🪥", why: "Gigi bersih sebelum tidur mencegah gigi berlubang." },
   { id: "t24", time: "malam", label: "Siap-siap tidur", emoji: "😴", why: "Tidur cukup bikin badan siap bangun subuh dengan segar." },
 ];
