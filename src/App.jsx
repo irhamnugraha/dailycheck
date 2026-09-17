@@ -246,11 +246,6 @@ function playChime() {
 function cloneTemplate() {
   return DEFAULT_TEMPLATE.map((t) => ({ ...t, id: genId(), active: true, done: false, doneAt: null, earnedPoints: 0, custom: false, needsPhoto: false, photo: null }));
 }
-function pickBonusTask(tasks) {
-  const eligible = tasks.filter((t) => t.active !== false);
-  if (eligible.length === 0) return null;
-  return eligible[Math.floor(Math.random() * eligible.length)].id;
-}
 function pruneHistory(history, keepDays = 120) {
   const cutoff = new Date();
   cutoff.setDate(cutoff.getDate() - keepDays);
@@ -324,7 +319,8 @@ function rollover(d) {
         streak,
         bestStreak,
         history,
-        bonusTaskId: pickBonusTask(resetTasks),
+        // bonusTaskId is set manually by a parent (Edit Data Anak) and
+        // carries over as-is across days — no longer re-randomized here.
         tasks: resetTasks,
       };
     });
@@ -2079,7 +2075,7 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
 }
 
 /* ---------- Draggable Task Row ---------- */
-function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMove, onDragEnd, onToggleActive, onRemove, expanded, onToggleExpand, onUpdateField }) {
+function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMove, onDragEnd, onToggleActive, onRemove, expanded, onToggleExpand, onUpdateField, isBonus, onSetBonus }) {
   return (
     <div>
       <div
@@ -2104,6 +2100,16 @@ function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMo
         </div>
         <span style={{ fontSize: 18 }} className="shrink-0">{task.emoji}</span>
         <span style={{ color: task.active === false ? "#B8AF8F" : INK }} className="text-[16px] font-semibold flex-1 truncate">{task.label}</span>
+        {onSetBonus && (
+          <button
+            onClick={onSetBonus}
+            title="Jadikan Misi Bonus (2x poin)"
+            className="rounded-full flex items-center justify-center shrink-0"
+            style={{ width: 22, height: 22, background: isBonus ? GOLD : "#EFEAD8" }}
+          >
+            <span style={{ fontSize: 12 }}>🎲</span>
+          </button>
+        )}
         <button onClick={onToggleActive} className="rounded-full flex items-center justify-center shrink-0" style={{ width: 22, height: 22, background: task.active === false ? "#EFEAD8" : meta.color }}>
           {task.active !== false && <Check size={12} color="#fff" strokeWidth={3} />}
         </button>
@@ -2163,12 +2169,13 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
       bestStreak: 0,
       totalPoints: 0,
       history: {},
-      bonusTaskId: pickBonusTask(initialTasks),
+      bonusTaskId: null,
       violations: [],
     };
   });
 
   const toggleActive = (id) => setForm((f) => ({ ...f, tasks: f.tasks.map((t) => (t.id === id ? { ...t, active: t.active === false ? true : false } : t)) }));
+  const setBonusTask = (id) => setForm((f) => ({ ...f, bonusTaskId: f.bonusTaskId === id ? null : id }));
   const removeCustom = (id) => setForm((f) => ({ ...f, tasks: f.tasks.filter((t) => t.id !== id) }));
   const updateTaskField = (id, patch) => setForm((f) => ({ ...f, tasks: f.tasks.map((t) => (t.id === id ? { ...t, ...patch } : t)) }));
   const [expandedTaskId, setExpandedTaskId] = useState(null);
@@ -2270,7 +2277,7 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
               </button>
             )}
           </div>
-          <p style={{ color: "#8A8360" }} className="text-[14px] mt-1 mb-2">Tahan ikon ⠿ lalu geser untuk mengubah urutan tugas.</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-1 mb-2">Tahan ikon ⠿ lalu geser untuk mengubah urutan tugas. Tap 🎲 pada satu tugas untuk jadikan Misi Bonus (2x poin) hari ini — dipilih manual oleh orang tua, tidak berganti otomatis.</p>
           {periods.map((period) => {
             const time = period.key;
             const groupTasks = form.tasks.filter((t) => t.time === time);
@@ -2297,6 +2304,8 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
                       expanded={expandedTaskId === t.id}
                       onToggleExpand={() => setExpandedTaskId((id) => (id === t.id ? null : t.id))}
                       onUpdateField={(patch) => updateTaskField(t.id, patch)}
+                      isBonus={form.bonusTaskId === t.id}
+                      onSetBonus={() => setBonusTask(t.id)}
                     />
                   ))}
                 </div>
