@@ -370,7 +370,7 @@ function Sheet({ title, onClose, children }) {
         style={{ background: "#FFFDF7", maxHeight: "86%", boxShadow: "0 -8px 24px rgba(0,0,0,0.2)" }}
       >
         <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b" style={{ borderColor: "#EFE6CE" }}>
-          <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-lg font-bold">{title}</h2>
+          <h2 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[22px] font-bold">{title}</h2>
           <button onClick={onClose} style={{ background: "#F1ECDB" }} className="p-2 rounded-full">
             <X size={18} color={INK} />
           </button>
@@ -394,7 +394,7 @@ function PickerModal({ title, onClose, children }) {
         style={{ background: "#FFFDF7", maxHeight: "70%", boxShadow: "0 -8px 24px rgba(0,0,0,0.25)" }}
       >
         <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b" style={{ borderColor: "#EFE6CE" }}>
-          <h3 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-sm font-bold">{title}</h3>
+          <h3 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[18px] font-bold">{title}</h3>
           <button onClick={onClose} style={{ background: "#F1ECDB" }} className="p-1.5 rounded-full">
             <X size={14} color={INK} />
           </button>
@@ -432,7 +432,7 @@ function IconPickerButton({ value, options, onChange, activeColor, size = 40 }) 
                 className="rounded-2xl flex items-center justify-center"
                 style={{
                   aspectRatio: "1 / 1",
-                  fontSize: 20,
+                  fontSize: 24,
                   background: value === em ? (activeColor || INK) : "#F1ECDB",
                   border: value === em ? `2px solid ${INK}` : "2px solid transparent",
                 }}
@@ -507,7 +507,7 @@ function PinPad({ pin, onSuccess, onCancel }) {
     <div className="absolute inset-0 z-40 flex flex-col items-center justify-center px-8" style={{ background: "rgba(27,37,89,0.92)" }}>
       <Lock size={30} color={GOLD} />
       <p className="text-white mt-3 mb-1 font-semibold" style={{ fontFamily: "'Baloo 2', sans-serif" }}>Masukkan PIN Orang Tua</p>
-      {err && <p style={{ color: "#FF8080" }} className="text-xs mb-2">PIN salah, coba lagi</p>}
+      {err && <p style={{ color: "#FF8080" }} className="text-[16px] mb-2">PIN salah, coba lagi</p>}
       <div className="flex gap-3 my-4">
         {[0, 1, 2, 3].map((i) => (
           <div key={i} className="rounded-full" style={{ width: 16, height: 16, background: val.length > i ? GOLD : "rgba(255,255,255,0.25)" }} />
@@ -515,11 +515,11 @@ function PinPad({ pin, onSuccess, onCancel }) {
       </div>
       <div className="grid grid-cols-3 gap-3 w-full max-w-[240px]">
         {[1,2,3,4,5,6,7,8,9].map((n) => (
-          <button key={n} onClick={() => press(String(n))} className="rounded-2xl py-3 text-lg font-bold text-white" style={{ background: "rgba(255,255,255,0.12)" }}>{n}</button>
+          <button key={n} onClick={() => press(String(n))} className="rounded-2xl py-3 text-[22px] font-bold text-white" style={{ background: "rgba(255,255,255,0.12)" }}>{n}</button>
         ))}
-        <button onClick={onCancel} className="rounded-2xl py-3 text-sm font-semibold text-white" style={{ background: "rgba(255,255,255,0.08)" }}>Batal</button>
-        <button onClick={() => press("0")} className="rounded-2xl py-3 text-lg font-bold text-white" style={{ background: "rgba(255,255,255,0.12)" }}>0</button>
-        <button onClick={() => setVal(val.slice(0, -1))} className="rounded-2xl py-3 text-sm font-semibold text-white" style={{ background: "rgba(255,255,255,0.08)" }}>⌫</button>
+        <button onClick={onCancel} className="rounded-2xl py-3 text-[18px] font-semibold text-white" style={{ background: "rgba(255,255,255,0.08)" }}>Batal</button>
+        <button onClick={() => press("0")} className="rounded-2xl py-3 text-[22px] font-bold text-white" style={{ background: "rgba(255,255,255,0.12)" }}>0</button>
+        <button onClick={() => setVal(val.slice(0, -1))} className="rounded-2xl py-3 text-[18px] font-semibold text-white" style={{ background: "rgba(255,255,255,0.08)" }}>⌫</button>
       </div>
     </div>
   );
@@ -547,8 +547,8 @@ function PhotoCaptureSheet({ label, emoji, onConfirm, onCancel }) {
     <div className="absolute inset-0 z-40 flex flex-col items-center justify-center px-6" style={{ background: "rgba(27,37,89,0.85)" }}>
       <div className="rounded-3xl p-5 w-full pop-in flex flex-col items-center" style={{ background: "#FFFDF7", maxWidth: 300 }}>
         <div className="flex items-center gap-2 mb-3">
-          <span style={{ fontSize: 20 }}>{emoji || "📌"}</span>
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">{label}</p>
+          <span style={{ fontSize: 24 }}>{emoji || "📌"}</span>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">{label}</p>
         </div>
         <input ref={inputRef} type="file" accept="image/*" capture="environment" onChange={handleFile} style={{ display: "none" }} />
         {photo ? (
@@ -560,26 +560,26 @@ function PhotoCaptureSheet({ label, emoji, onConfirm, onCancel }) {
             className="w-full rounded-2xl py-6 mb-3 flex flex-col items-center justify-center gap-1"
             style={{ background: "#F1ECDB", border: "2px dashed #C9BE93" }}
           >
-            <span style={{ fontSize: 26 }}>📷</span>
-            <span style={{ color: "#8A8360" }} className="text-xs font-semibold">{busy ? "Memproses…" : "Ambil Foto Bukti"}</span>
+            <span style={{ fontSize: 30 }}>📷</span>
+            <span style={{ color: "#8A8360" }} className="text-[16px] font-semibold">{busy ? "Memproses…" : "Ambil Foto Bukti"}</span>
           </button>
         )}
         <div className="flex flex-col gap-2 w-full">
           {photo ? (
             <>
-              <button onClick={() => onConfirm(photo)} className="rounded-xl py-2.5 text-sm font-bold text-white" style={{ background: "#00B8A9" }}>
+              <button onClick={() => onConfirm(photo)} className="rounded-xl py-2.5 text-[18px] font-bold text-white" style={{ background: "#00B8A9" }}>
                 Selesai
               </button>
-              <button onClick={() => setPhoto(null)} className="rounded-xl py-2 text-xs font-semibold" style={{ color: "#8A8360" }}>
+              <button onClick={() => setPhoto(null)} className="rounded-xl py-2 text-[16px] font-semibold" style={{ color: "#8A8360" }}>
                 Foto Ulang
               </button>
             </>
           ) : (
-            <button onClick={() => onConfirm(null)} className="rounded-xl py-2 text-xs font-semibold" style={{ color: "#8A8360" }}>
+            <button onClick={() => onConfirm(null)} className="rounded-xl py-2 text-[16px] font-semibold" style={{ color: "#8A8360" }}>
               Selesai tanpa foto
             </button>
           )}
-          <button onClick={onCancel} className="rounded-xl py-2 text-xs font-semibold" style={{ color: DANGER }}>
+          <button onClick={onCancel} className="rounded-xl py-2 text-[16px] font-semibold" style={{ color: DANGER }}>
             Batal
           </button>
         </div>
@@ -700,12 +700,12 @@ export default function FamilyRoutineApp({ session }) {
   if (loadError) {
     return (
       <div className="w-full h-full flex flex-col items-center justify-center text-center px-8" style={{ background: PAPER, minHeight: 500 }}>
-        <span style={{ fontSize: 36 }}>⚠️</span>
+        <span style={{ fontSize: 40 }}>⚠️</span>
         <p style={{ color: INK, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold mt-2">Gagal memuat data</p>
-        <p style={{ color: "#8A8360" }} className="text-sm mt-1 mb-4">Periksa koneksi internet, lalu coba lagi.</p>
+        <p style={{ color: "#8A8360" }} className="text-[18px] mt-1 mb-4">Periksa koneksi internet, lalu coba lagi.</p>
         <button
           onClick={() => { setLoadError(false); setLoading(true); window.location.reload(); }}
-          className="px-5 py-2.5 rounded-full text-white font-bold text-sm"
+          className="px-5 py-2.5 rounded-full text-white font-bold text-[18px]"
           style={{ background: "#FF6B4A" }}
         >
           Coba Lagi
@@ -943,8 +943,8 @@ export default function FamilyRoutineApp({ session }) {
 
           {storageNotice && (
             <div className="mx-4 mb-1 rounded-xl px-3 py-2 flex items-center gap-2 shrink-0" style={{ background: "#FDECEA" }}>
-              <span style={{ fontSize: 13 }}>⚠️</span>
-              <p style={{ color: DANGER }} className="text-[10px] font-semibold flex-1">Gagal menyimpan data. Perubahan mungkin hilang saat halaman ditutup.</p>
+              <span style={{ fontSize: 17 }}>⚠️</span>
+              <p style={{ color: DANGER }} className="text-[14px] font-semibold flex-1">Gagal menyimpan data. Perubahan mungkin hilang saat halaman ditutup.</p>
               <button onClick={() => setStorageNotice(false)} className="shrink-0">
                 <X size={12} color={DANGER} />
               </button>
@@ -1154,7 +1154,7 @@ function NavBtn({ active, icon: Icon, label, onClick, locked, accent }) {
         <Icon size={20} color={active ? accent : INK} strokeWidth={active ? 2.6 : 2} />
         {locked && <Lock size={9} color={INK} style={{ position: "absolute", right: -6, bottom: -4 }} />}
       </div>
-      <span style={{ color: active ? accent : INK, fontSize: 11 }} className="font-semibold">{label}</span>
+      <span style={{ color: active ? accent : INK, fontSize: 15 }} className="font-semibold">{label}</span>
     </button>
   );
 }
@@ -1164,15 +1164,15 @@ function TaskItem({ t, period, isBonus, whyOpen, onToggle, onOpenWhy, onViewPhot
   return (
     <div className="rounded-xl overflow-hidden" style={{ background: isBonus ? "#FFF6DA" : "#FFFDF7" }}>
       <div onClick={onToggle} className="flex items-center gap-1.5 px-2 py-1.5" style={{ cursor: "pointer" }}>
-        <span style={{ fontSize: 15 }} className="shrink-0">{t.emoji || "📌"}</span>
+        <span style={{ fontSize: 19 }} className="shrink-0">{t.emoji || "📌"}</span>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1 flex-wrap">
-            <p style={{ color: t.done ? "#B8AF8F" : INK, textDecoration: t.done ? "line-through" : "none" }} className="text-[11px] font-semibold leading-snug">{t.label}</p>
-            {isBonus && <span style={{ fontSize: 9 }}>✨</span>}
-            {t.needsPhoto && !t.done && <span style={{ fontSize: 9 }}>📷</span>}
+            <p style={{ color: t.done ? "#B8AF8F" : INK, textDecoration: t.done ? "line-through" : "none" }} className="text-[15px] font-semibold leading-snug">{t.label}</p>
+            {isBonus && <span style={{ fontSize: 13 }}>✨</span>}
+            {t.needsPhoto && !t.done && <span style={{ fontSize: 13 }}>📷</span>}
           </div>
           {t.done && (
-            <p style={{ color: "#B8AF8F" }} className="text-[9px] font-semibold mt-0.5">
+            <p style={{ color: "#B8AF8F" }} className="text-[13px] font-semibold mt-0.5">
               Selesai {t.doneAt}
             </p>
           )}
@@ -1188,7 +1188,7 @@ function TaskItem({ t, period, isBonus, whyOpen, onToggle, onOpenWhy, onViewPhot
         )}
         {t.why && (
           <button onClick={(e) => { e.stopPropagation(); onOpenWhy(); }} className="rounded-full flex items-center justify-center shrink-0" style={{ width: 16, height: 16, background: "#EFEAD8", color: "#8A8360" }}>
-            <span style={{ fontSize: 9 }}>ⓘ</span>
+            <span style={{ fontSize: 13 }}>ⓘ</span>
           </button>
         )}
         <div
@@ -1200,7 +1200,7 @@ function TaskItem({ t, period, isBonus, whyOpen, onToggle, onOpenWhy, onViewPhot
       </div>
       {whyOpen && (
         <div className="px-2 pb-1.5 -mt-0.5">
-          <p style={{ color: "#8A8360", background: "#F1ECDB" }} className="text-[10px] rounded-lg px-2 py-1.5">{t.why}</p>
+          <p style={{ color: "#8A8360", background: "#F1ECDB" }} className="text-[14px] rounded-lg px-2 py-1.5">{t.why}</p>
         </div>
       )}
     </div>
@@ -1213,13 +1213,13 @@ function ChildHeaderCard({ child, onOpenDetail, dayTotal, dayDone }) {
     <div onClick={() => onOpenDetail(child.id)} className="rounded-2xl p-2.5 flex items-center gap-2" style={{ background: "#FFFDF7", cursor: "pointer" }}>
       <Avatar emoji={child.emoji} color={child.color} size={32} />
       <div className="flex-1 min-w-0">
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-xs truncate">{child.name}</p>
-        <p style={{ color: "#8A8360" }} className="text-[10px]">{done}/{total} tugas</p>
+        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[16px] truncate">{child.name}</p>
+        <p style={{ color: "#8A8360" }} className="text-[14px]">{done}/{total} tugas</p>
       </div>
       {child.streak > 0 && (
         <div className="flex items-center gap-0.5 shrink-0">
-          <span style={{ fontSize: 11 }}>🔥</span>
-          <span style={{ color: "#FF6B4A" }} className="text-[10px] font-bold">{child.streak}</span>
+          <span style={{ fontSize: 15 }}>🔥</span>
+          <span style={{ color: "#FF6B4A" }} className="text-[14px] font-bold">{child.streak}</span>
         </div>
       )}
     </div>
@@ -1230,10 +1230,10 @@ function ChildHeaderCard({ child, onOpenDetail, dayTotal, dayDone }) {
 function PointsChip({ label, value, color }) {
   return (
     <div className="flex-1 rounded-2xl px-2.5 py-1.5" style={{ background: "#FFFDF7" }}>
-      <p style={{ color: "#8A8360" }} className="text-[9px] font-semibold truncate">{label}</p>
+      <p style={{ color: "#8A8360" }} className="text-[13px] font-semibold truncate">{label}</p>
       <div className="flex items-center gap-1 mt-0.5">
         <Star size={11} color={color} fill={color} />
-        <span style={{ color: INK }} className="text-xs font-extrabold">{value}</span>
+        <span style={{ color: INK }} className="text-[16px] font-extrabold">{value}</span>
       </div>
     </div>
   );
@@ -1245,8 +1245,8 @@ function ChildTaskBody({ child, periods, onToggleTask, whyOpen, setWhyOpen, setP
     <div className="flex flex-col gap-2">
       {bonusTask && !bonusTask.done && (
         <div className="rounded-xl px-2 py-1.5 flex items-center gap-1.5" style={{ background: GOLD }}>
-          <span style={{ fontSize: 13 }}>🎲</span>
-          <p style={{ color: INK }} className="text-[10px] font-bold truncate">2x: {bonusTask.label}</p>
+          <span style={{ fontSize: 17 }}>🎲</span>
+          <p style={{ color: INK }} className="text-[14px] font-bold truncate">2x: {bonusTask.label}</p>
         </div>
       )}
 
@@ -1256,9 +1256,9 @@ function ChildTaskBody({ child, periods, onToggleTask, whyOpen, setWhyOpen, setP
         return (
           <div key={period.key} className="rounded-2xl p-1.5" style={{ background: period.color + "1A" }}>
             <div className="flex items-center gap-1 mb-1 px-0.5">
-              <span style={{ fontSize: 11 }}>{period.emoji}</span>
-              <span style={{ color: period.color, fontFamily: "'Baloo 2', sans-serif" }} className="text-[10px] font-bold flex-1 truncate">{period.label}</span>
-              <span style={{ color: period.color }} className="text-[9px] font-semibold shrink-0">{list.filter((t) => t.done).length}/{list.length}</span>
+              <span style={{ fontSize: 15 }}>{period.emoji}</span>
+              <span style={{ color: period.color, fontFamily: "'Baloo 2', sans-serif" }} className="text-[14px] font-bold flex-1 truncate">{period.label}</span>
+              <span style={{ color: period.color }} className="text-[13px] font-semibold shrink-0">{list.filter((t) => t.done).length}/{list.length}</span>
             </div>
             <div className="flex flex-col gap-1">
               {list.map((t) => (
@@ -1285,8 +1285,8 @@ function PrayerTimesCard({ now, location }) {
   if (!location) {
     return (
       <div className="rounded-2xl px-3 py-2.5 flex items-center gap-2" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
-        <span style={{ fontSize: 16 }}>🕌</span>
-        <p style={{ color: "#8A8360" }} className="text-[11px]">Aktifkan lokasi di Pengaturan untuk menampilkan jadwal shalat.</p>
+        <span style={{ fontSize: 20 }}>🕌</span>
+        <p style={{ color: "#8A8360" }} className="text-[15px]">Aktifkan lokasi di Pengaturan untuk menampilkan jadwal shalat.</p>
       </div>
     );
   }
@@ -1297,15 +1297,15 @@ function PrayerTimesCard({ now, location }) {
   return (
     <div className="rounded-2xl p-2" style={{ background: "#FFFDF7" }}>
       <div className="flex items-center gap-1 mb-1 px-0.5">
-        <span style={{ fontSize: 11 }}>🕌</span>
-        <span style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[10px] font-bold">Jadwal Shalat</span>
-        {times.imsak && <span style={{ color: "#8A8360" }} className="text-[9px] ml-auto">Imsak {times.imsak}</span>}
+        <span style={{ fontSize: 15 }}>🕌</span>
+        <span style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[14px] font-bold">Jadwal Shalat</span>
+        {times.imsak && <span style={{ color: "#8A8360" }} className="text-[13px] ml-auto">Imsak {times.imsak}</span>}
       </div>
       <div className="grid grid-cols-5 gap-1">
         {order.map(([label, t], idx) => (
           <div key={label} className="flex flex-col items-center rounded-lg py-1" style={{ background: idx === nextIdx ? INK : "#F1ECDB" }}>
-            <span style={{ color: idx === nextIdx ? "#fff" : "#8A8360" }} className="text-[8px] font-semibold">{label}</span>
-            <span style={{ color: idx === nextIdx ? "#fff" : INK }} className="text-[10px] font-bold">{t || "--:--"}</span>
+            <span style={{ color: idx === nextIdx ? "#fff" : "#8A8360" }} className="text-[12px] font-semibold">{label}</span>
+            <span style={{ color: idx === nextIdx ? "#fff" : INK }} className="text-[14px] font-bold">{t || "--:--"}</span>
           </div>
         ))}
       </div>
@@ -1331,14 +1331,14 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
       {/* TOP BLOCK — normal (non-scrolling) flow, sized to its own content */}
       <div className="shrink-0">
         {data.settings.familyName && (
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-xs uppercase tracking-wide text-center pt-2 mb-1">{data.settings.familyName}</p>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360" }} className="font-bold text-[16px] uppercase tracking-wide text-center pt-2 mb-1">{data.settings.familyName}</p>
         )}
         <div className="flex items-center gap-2 pt-1 pb-3">
           <div className="shrink-0 text-center" style={{ minWidth: 76 }}>
-            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 26, lineHeight: 1 }} className="font-extrabold tabular-nums">
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK, fontSize: 30, lineHeight: 1 }} className="font-extrabold tabular-nums">
               {String(now.getHours()).padStart(2, "0")}:{String(now.getMinutes()).padStart(2, "0")}
             </p>
-            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360", fontSize: 9 }} className="font-bold mt-1">{formatDateShortID(now)}</p>
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: "#8A8360", fontSize: 13 }} className="font-bold mt-1">{formatDateShortID(now)}</p>
           </div>
           <div className="flex-1 min-w-0">
             <PrayerTimesCard now={now} location={data.location} />
@@ -1347,7 +1347,7 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
 
         {upcoming.length > 0 && (
           <div className="mb-4">
-            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Acara Mendatang</p>
+            <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-2">Acara Mendatang</p>
             <div className="flex flex-col gap-2">
               {upcoming.map((e) => {
                 const who = e.who === "all" ? null : data.children.find((c) => c.id === e.who);
@@ -1357,8 +1357,8 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
                   <div key={e.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
                     <div style={{ width: 8, height: 8, borderRadius: 999, background: dot }} />
                     <div className="flex-1">
-                      <p style={{ color: INK }} className="text-xs font-bold">{e.title}</p>
-                      <p style={{ color: "#8A8360" }} className="text-[10px]">{DAY_SHORT[d.getDay()]}, {d.getDate()} {MONTH_NAMES[d.getMonth()]}{e.time ? ` · ${e.time}` : ""} {who ? `· ${who.name}` : "· Semua Keluarga"}</p>
+                      <p style={{ color: INK }} className="text-[16px] font-bold">{e.title}</p>
+                      <p style={{ color: "#8A8360" }} className="text-[14px]">{DAY_SHORT[d.getDay()]}, {d.getDate()} {MONTH_NAMES[d.getMonth()]}{e.time ? ` · ${e.time}` : ""} {who ? `· ${who.name}` : "· Semua Keluarga"}</p>
                     </div>
                   </div>
                 );
@@ -1370,20 +1370,20 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
         {dueHomeItems.length > 0 && (
           <div className="mb-4">
             <div className="flex items-center justify-between mb-2">
-              <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">Perlu Diperhatikan di Rumah</p>
-              <button onClick={onGoHome} style={{ color: "#00B8A9" }} className="text-[11px] font-bold">Lihat Semua</button>
+              <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">Perlu Diperhatikan di Rumah</p>
+              <button onClick={onGoHome} style={{ color: "#00B8A9" }} className="text-[15px] font-bold">Lihat Semua</button>
             </div>
             <div className="flex flex-col gap-2">
               {dueHomeItems.map(({ item, status }) => (
                 <div key={item.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
-                  <div className="rounded-full flex items-center justify-center shrink-0" style={{ width: 28, height: 28, background: item.color, fontSize: 13 }}>{item.emoji}</div>
+                  <div className="rounded-full flex items-center justify-center shrink-0" style={{ width: 28, height: 28, background: item.color, fontSize: 17 }}>{item.emoji}</div>
                   <div className="flex-1 min-w-0">
-                    <p style={{ color: INK }} className="text-xs font-bold truncate">{item.name}</p>
-                    <p style={{ color: status.overdue ? DANGER : "#8A8360" }} className="text-[10px] font-semibold">
+                    <p style={{ color: INK }} className="text-[16px] font-bold truncate">{item.name}</p>
+                    <p style={{ color: status.overdue ? DANGER : "#8A8360" }} className="text-[14px] font-semibold">
                       {status.overdue ? `Terlambat ${Math.abs(status.daysUntil)} hari` : status.dueToday ? "Jatuh tempo hari ini" : `${status.daysUntil} hari lagi`}
                     </p>
                   </div>
-                  <button onClick={() => onMarkHomeItemDone(item.id)} className="shrink-0 rounded-full px-2.5 py-1.5 text-[10px] font-bold text-white" style={{ background: "#00B8A9" }}>
+                  <button onClick={() => onMarkHomeItemDone(item.id)} className="shrink-0 rounded-full px-2.5 py-1.5 text-[14px] font-bold text-white" style={{ background: "#00B8A9" }}>
                     Selesai
                   </button>
                 </div>
@@ -1406,10 +1406,10 @@ function Dashboard({ data, now, dayTotal, dayDone, onOpenChild, onAddChild, onTo
           "sticky" header would never visibly stick.) */}
       {data.children.length === 0 ? (
         <div className="mt-2 flex flex-col items-center text-center px-4 py-10 rounded-3xl" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
-          <span style={{ fontSize: 40 }}>🧸</span>
+          <span style={{ fontSize: 44 }}>🧸</span>
           <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold mt-2">Papan tugas masih kosong</p>
-          <p style={{ color: "#8A8360" }} className="text-sm mt-1 mb-4">Tambahkan anak pertama untuk mulai membuat checklist harian.</p>
-          <button onClick={onAddChild} style={{ background: accent }} className="px-5 py-2.5 rounded-full text-white font-bold text-sm flex items-center gap-1">
+          <p style={{ color: "#8A8360" }} className="text-[18px] mt-1 mb-4">Tambahkan anak pertama untuk mulai membuat checklist harian.</p>
+          <button onClick={onAddChild} style={{ background: accent }} className="px-5 py-2.5 rounded-full text-white font-bold text-[18px] flex items-center gap-1">
             <Plus size={16} /> Tambah Anak
           </button>
         </div>
@@ -1482,41 +1482,41 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
         <Avatar emoji={child.emoji} color={child.color} size={38} />
         <div className="flex-1">
           <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold leading-none">{child.name}</p>
-          <p style={{ color: "#8A8360" }} className="text-[11px] mt-1">{done}/{total} tugas selesai</p>
+          <p style={{ color: "#8A8360" }} className="text-[15px] mt-1">{done}/{total} tugas selesai</p>
         </div>
         {child.streak > 0 && (
           <div className="flex items-center gap-1 px-2 py-1.5 rounded-full" style={{ background: "#FFEDE6" }}>
-            <span style={{ fontSize: 12 }}>🔥</span>
-            <span style={{ color: "#FF6B4A" }} className="text-xs font-extrabold">{child.streak}</span>
+            <span style={{ fontSize: 16 }}>🔥</span>
+            <span style={{ color: "#FF6B4A" }} className="text-[16px] font-extrabold">{child.streak}</span>
           </div>
         )}
         <div className="flex items-center gap-1 px-2.5 py-1.5 rounded-full" style={{ background: GOLD + "33" }}>
           <Star size={12} color="#B8860B" fill="#B8860B" />
-          <span style={{ color: "#7A5B00" }} className="text-xs font-extrabold">{child.points}</span>
+          <span style={{ color: "#7A5B00" }} className="text-[16px] font-extrabold">{child.points}</span>
         </div>
       </div>
 
       <div className="rounded-3xl p-4 mb-4 flex items-center gap-3" style={{ background: "#FFFDF7", border: "2px solid #EFE6CE" }}>
-        <span style={{ fontSize: 38 }}>{mascot.stage.emoji}</span>
+        <span style={{ fontSize: 42 }}>{mascot.stage.emoji}</span>
         <div className="flex-1 min-w-0">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">{mascot.stage.name}</p>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">{mascot.stage.name}</p>
           {mascot.next ? (
             <>
               <ProgressBar pct={mascot.pct} color={child.color} height={8} />
-              <p style={{ color: "#8A8360" }} className="text-[10px] mt-1">{mascot.next.min - mascot.total} poin lagi ke {mascot.next.name}</p>
+              <p style={{ color: "#8A8360" }} className="text-[14px] mt-1">{mascot.next.min - mascot.total} poin lagi ke {mascot.next.name}</p>
             </>
           ) : (
-            <p style={{ color: "#8A8360" }} className="text-[10px] mt-1">Level tertinggi tercapai! 🎉</p>
+            <p style={{ color: "#8A8360" }} className="text-[14px] mt-1">Level tertinggi tercapai! 🎉</p>
           )}
         </div>
       </div>
 
       {bonusTask && !bonusTask.done && (
         <div className="rounded-3xl p-3 mb-4 flex items-center gap-2" style={{ background: GOLD }}>
-          <span style={{ fontSize: 22 }}>🎲</span>
+          <span style={{ fontSize: 26 }}>🎲</span>
           <div className="flex-1 min-w-0">
-            <p style={{ color: INK, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-xs">Misi Bonus Hari Ini · 2x Poin!</p>
-            <p style={{ color: INK }} className="text-xs font-semibold truncate">{bonusTask.emoji} {bonusTask.label}</p>
+            <p style={{ color: INK, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-[16px]">Misi Bonus Hari Ini · 2x Poin!</p>
+            <p style={{ color: INK }} className="text-[16px] font-semibold truncate">{bonusTask.emoji} {bonusTask.label}</p>
           </div>
         </div>
       )}
@@ -1528,10 +1528,10 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
         return (
           <div key={period.key} className="mb-4 rounded-3xl p-3" style={{ background: period.color + "1A" }}>
             <div className="flex items-center gap-2 mb-2 px-1">
-              <span style={{ fontSize: 15 }}>{period.emoji}</span>
-              <span style={{ color: period.color, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-sm">{period.label}</span>
-              <span style={{ color: period.color }} className="text-[10px] font-semibold">{period.start}–{period.end}</span>
-              <span style={{ color: period.color }} className="text-xs ml-auto font-semibold">{sectionDone}/{list.length}</span>
+              <span style={{ fontSize: 19 }}>{period.emoji}</span>
+              <span style={{ color: period.color, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-[18px]">{period.label}</span>
+              <span style={{ color: period.color }} className="text-[14px] font-semibold">{period.start}–{period.end}</span>
+              <span style={{ color: period.color }} className="text-[16px] ml-auto font-semibold">{sectionDone}/{list.length}</span>
             </div>
             <div className="flex flex-col gap-2">
               {list.map((t) => {
@@ -1539,15 +1539,15 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
                 return (
                   <div key={t.id} className="rounded-2xl overflow-hidden" style={{ background: isBonus ? "#FFF6DA" : "#FFFDF7" }}>
                     <div onClick={() => onToggle(t.id)} className="flex items-center gap-3 px-3 py-2.5" style={{ cursor: "pointer" }}>
-                      <span style={{ fontSize: 18 }}>{t.emoji || "📌"}</span>
+                      <span style={{ fontSize: 22 }}>{t.emoji || "📌"}</span>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-1">
-                          <p style={{ color: t.done ? "#B8AF8F" : INK, textDecoration: t.done ? "line-through" : "none" }} className="text-sm font-semibold truncate">{t.label}</p>
-                          {isBonus && <span style={{ fontSize: 10 }}>✨</span>}
-                          {t.needsPhoto && !t.done && <span style={{ fontSize: 10 }}>📷</span>}
+                          <p style={{ color: t.done ? "#B8AF8F" : INK, textDecoration: t.done ? "line-through" : "none" }} className="text-[18px] font-semibold truncate">{t.label}</p>
+                          {isBonus && <span style={{ fontSize: 14 }}>✨</span>}
+                          {t.needsPhoto && !t.done && <span style={{ fontSize: 14 }}>📷</span>}
                         </div>
                         {t.done && (
-                          <p style={{ color: "#B8AF8F" }} className="text-[10px] font-semibold mt-0.5">
+                          <p style={{ color: "#B8AF8F" }} className="text-[14px] font-semibold mt-0.5">
                             Selesai {t.doneAt}{isBonus ? " · 2x poin" : ""}
                           </p>
                         )}
@@ -1563,7 +1563,7 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
                       )}
                       {t.why && (
                         <button onClick={(e) => { e.stopPropagation(); setWhyOpenId(whyOpenId === t.id ? null : t.id); }} className="rounded-full flex items-center justify-center shrink-0" style={{ width: 20, height: 20, background: "#EFEAD8", color: "#8A8360" }}>
-                          <span style={{ fontSize: 11 }}>ⓘ</span>
+                          <span style={{ fontSize: 15 }}>ⓘ</span>
                         </button>
                       )}
                       <div
@@ -1575,7 +1575,7 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
                     </div>
                     {whyOpenId === t.id && (
                       <div className="px-3 pb-2.5 -mt-1">
-                        <p style={{ color: "#8A8360", background: "#F8F4E4" }} className="text-[11px] rounded-lg px-2.5 py-2">{t.why}</p>
+                        <p style={{ color: "#8A8360", background: "#F8F4E4" }} className="text-[15px] rounded-lg px-2.5 py-2">{t.why}</p>
                       </div>
                     )}
                   </div>
@@ -1589,23 +1589,23 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
       <div className="rounded-3xl p-4 mb-4" style={{ background: achieved ? GOLD : "#FFFDF7", border: achieved ? "none" : "2px solid #EFE6CE" }}>
         <div className="flex items-center gap-2 mb-1">
           <Award size={16} color={achieved ? INK : "#B8860B"} />
-          <span style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">Progres Mingguan</span>
+          <span style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">Progres Mingguan</span>
         </div>
         <ProgressBar pct={weekPct} color={achieved ? INK : GOLD} track={achieved ? "rgba(27,37,89,0.15)" : "#EFEAD8"} height={12} />
-        <p style={{ color: INK }} className="text-xs mt-1.5 font-semibold">{child.weeklyPoints} / {child.weeklyGoal} poin</p>
+        <p style={{ color: INK }} className="text-[16px] mt-1.5 font-semibold">{child.weeklyPoints} / {child.weeklyGoal} poin</p>
         {child.weeklyReward ? (
-          <p style={{ color: INK }} className="text-xs mt-1">🎁 Hadiah: {child.weeklyReward}</p>
+          <p style={{ color: INK }} className="text-[16px] mt-1">🎁 Hadiah: {child.weeklyReward}</p>
         ) : null}
         {achieved && (
-          <p style={{ color: INK, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-sm mt-2">🎉 Target minggu ini tercapai!</p>
+          <p style={{ color: INK, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-[18px] mt-2">🎉 Target minggu ini tercapai!</p>
         )}
         {achieved && child.weeklyReward ? (
           child.rewardClaimed ? (
-            <p style={{ color: INK }} className="text-xs font-bold mt-2">✅ Hadiah sudah diklaim minggu ini</p>
+            <p style={{ color: INK }} className="text-[16px] font-bold mt-2">✅ Hadiah sudah diklaim minggu ini</p>
           ) : (
             <button
               onClick={() => onClaimReward(child.id)}
-              className="w-full rounded-xl py-2 text-sm font-bold mt-2"
+              className="w-full rounded-xl py-2 text-[18px] font-bold mt-2"
               style={{ background: INK, color: GOLD }}
             >
               🎁 Klaim Hadiah
@@ -1615,7 +1615,7 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
       </div>
 
       <div className="mb-4">
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Lencana Pencapaian</p>
+        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-2">Lencana Pencapaian</p>
         <div className="flex flex-wrap gap-2">
           {BADGE_THRESHOLDS.map((b) => {
             const earned = (child.bestStreak || 0) >= b.days;
@@ -1625,8 +1625,8 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
                 className="flex flex-col items-center justify-center rounded-2xl px-1 py-2"
                 style={{ width: 64, background: earned ? "#FFFDF7" : "#EFEAD8", opacity: earned ? 1 : 0.45, border: earned ? `2px solid ${GOLD}` : "2px solid transparent" }}
               >
-                <span style={{ fontSize: 20 }}>{b.emoji}</span>
-                <span style={{ color: INK, fontSize: 9 }} className="font-bold text-center mt-1 leading-tight">{b.label}</span>
+                <span style={{ fontSize: 24 }}>{b.emoji}</span>
+                <span style={{ color: INK, fontSize: 13 }} className="font-bold text-center mt-1 leading-tight">{b.label}</span>
               </div>
             );
           })}
@@ -1635,15 +1635,15 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
 
       {(child.violations || []).length > 0 && (
         <div className="mb-4">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Catatan Perilaku</p>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-2">Catatan Perilaku</p>
           <div className="flex flex-col gap-1.5">
             {child.violations.slice(0, 5).map((v) => (
               <div key={v.id} className="rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
                 <div className="flex items-center justify-between gap-2">
-                  <p style={{ color: INK }} className="text-xs font-semibold truncate flex-1">{v.note}</p>
-                  <span style={{ color: DANGER }} className="text-xs font-bold shrink-0">-{v.points}</span>
+                  <p style={{ color: INK }} className="text-[16px] font-semibold truncate flex-1">{v.note}</p>
+                  <span style={{ color: DANGER }} className="text-[16px] font-bold shrink-0">-{v.points}</span>
                 </div>
-                <p style={{ color: v.resolved ? "#00B8A9" : "#8A8360" }} className="text-[10px] mt-0.5">
+                <p style={{ color: v.resolved ? "#00B8A9" : "#8A8360" }} className="text-[14px] mt-0.5">
                   {v.date}{v.resolved ? ` · Sudah diselesaikan (+${v.refund} dikembalikan)` : " · Belum diselesaikan"}
                 </p>
               </div>
@@ -1654,12 +1654,12 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
 
       <div className="mb-2">
         <div className="flex items-center justify-between mb-2">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">Kalender Kebiasaan</p>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">Kalender Kebiasaan</p>
           <div className="flex items-center gap-1">
             <button onClick={() => setHeatmapMonth(new Date(hmYear, hmMonth - 1, 1))} className="p-1 rounded-full" style={{ background: "#FFFDF7" }}>
               <ChevronLeft size={13} color={INK} />
             </button>
-            <span style={{ color: INK }} className="text-[11px] font-semibold w-16 text-center">{MONTH_NAMES[hmMonth].slice(0, 3)} {hmYear}</span>
+            <span style={{ color: INK }} className="text-[15px] font-semibold w-16 text-center">{MONTH_NAMES[hmMonth].slice(0, 3)} {hmYear}</span>
             <button onClick={() => setHeatmapMonth(new Date(hmYear, hmMonth + 1, 1))} className="p-1 rounded-full" style={{ background: "#FFFDF7" }}>
               <ChevronRight size={13} color={INK} />
             </button>
@@ -1684,12 +1684,12 @@ function ChildDetail({ child, periods, onBack, onToggle, onClaimReward }) {
                     border: isToday ? `2px solid ${INK}` : "none",
                   }}
                 >
-                  <span style={{ fontSize: 8, color: frac && frac > 0.5 ? "#fff" : "#8A8360" }}>{d}</span>
+                  <span style={{ fontSize: 12, color: frac && frac > 0.5 ? "#fff" : "#8A8360" }}>{d}</span>
                 </div>
               );
             })}
           </div>
-          <p style={{ color: "#8A8360" }} className="text-[10px] mt-2">Makin gelap warnanya, makin banyak tugas yang selesai hari itu.</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-2">Makin gelap warnanya, makin banyak tugas yang selesai hari itu.</p>
         </div>
       </div>
 
@@ -1723,13 +1723,13 @@ function CalendarView({ data, calMonth, setCalMonth, selectedDay, setSelectedDay
   return (
     <div>
       <div className="flex items-center justify-between pt-2 pb-3">
-        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold">Kalender Keluarga</h1>
+        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[24px] font-extrabold">Kalender Keluarga</h1>
       </div>
       <div className="flex items-center justify-between mb-2 px-1">
         <button onClick={() => setCalMonth(new Date(year, month - 1, 1))} className="p-1.5 rounded-full" style={{ background: "#FFFDF7" }}>
           <ChevronLeft size={16} color={INK} />
         </button>
-        <span style={{ color: INK, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-sm">{MONTH_NAMES[month]} {year}</span>
+        <span style={{ color: INK, fontFamily: "'Baloo 2', sans-serif" }} className="font-bold text-[18px]">{MONTH_NAMES[month]} {year}</span>
         <button onClick={() => setCalMonth(new Date(year, month + 1, 1))} className="p-1.5 rounded-full" style={{ background: "#FFFDF7" }}>
           <ChevronRight size={16} color={INK} />
         </button>
@@ -1737,7 +1737,7 @@ function CalendarView({ data, calMonth, setCalMonth, selectedDay, setSelectedDay
 
       <div className="grid grid-cols-7 gap-1 mb-1">
         {["Sen","Sel","Rab","Kam","Jum","Sab","Min"].map((d) => (
-          <div key={d} style={{ color: "#8A8360" }} className="text-center text-[10px] font-bold py-1">{d}</div>
+          <div key={d} style={{ color: "#8A8360" }} className="text-center text-[14px] font-bold py-1">{d}</div>
         ))}
       </div>
       <div className="grid grid-cols-7 gap-1">
@@ -1754,7 +1754,7 @@ function CalendarView({ data, calMonth, setCalMonth, selectedDay, setSelectedDay
               className="rounded-xl flex flex-col items-center py-1.5"
               style={{ background: isSel ? INK : isToday ? "#FFEDE6" : "transparent" }}
             >
-              <span style={{ color: isSel ? "#fff" : INK }} className="text-xs font-semibold">{d}</span>
+              <span style={{ color: isSel ? "#fff" : INK }} className="text-[16px] font-semibold">{d}</span>
               <div className="flex gap-0.5 mt-0.5" style={{ minHeight: 4 }}>
                 {evs.slice(0, 3).map((e, idx) => {
                   const who = e.who === "all" ? null : data.children.find((c) => c.id === e.who);
@@ -1768,15 +1768,15 @@ function CalendarView({ data, calMonth, setCalMonth, selectedDay, setSelectedDay
 
       <div className="mt-4">
         <div className="flex items-center justify-between mb-2">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">
             {new Date(selectedDay + "T00:00:00").getDate()} {MONTH_NAMES[new Date(selectedDay + "T00:00:00").getMonth()]}
           </p>
-          <button onClick={onAddEvent} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-white" style={{ background: "#00B8A9" }}>
+          <button onClick={onAddEvent} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[16px] font-bold text-white" style={{ background: "#00B8A9" }}>
             <Plus size={13} /> Acara
           </button>
         </div>
         {selectedEvents.length === 0 ? (
-          <p style={{ color: "#8A8360" }} className="text-xs px-1">Belum ada acara di hari ini.</p>
+          <p style={{ color: "#8A8360" }} className="text-[16px] px-1">Belum ada acara di hari ini.</p>
         ) : (
           <div className="flex flex-col gap-2">
             {selectedEvents.map((e) => {
@@ -1785,8 +1785,8 @@ function CalendarView({ data, calMonth, setCalMonth, selectedDay, setSelectedDay
                 <div key={e.id} className="flex items-center gap-2 rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
                   <div style={{ width: 8, height: 8, borderRadius: 999, background: who ? who.color : INK }} />
                   <div className="flex-1">
-                    <p style={{ color: INK }} className="text-xs font-bold">{e.title}</p>
-                    <p style={{ color: "#8A8360" }} className="text-[10px]">{e.time ? `${e.time} · ` : ""}{who ? who.name : "Semua Keluarga"}</p>
+                    <p style={{ color: INK }} className="text-[16px] font-bold">{e.title}</p>
+                    <p style={{ color: "#8A8360" }} className="text-[14px]">{e.time ? `${e.time} · ` : ""}{who ? who.name : "Semua Keluarga"}</p>
                   </div>
                   <button onClick={() => onEditEvent(e)} className="p-1.5 rounded-full" style={{ background: "#F1ECDB" }}>
                     <Pencil size={12} color={INK} />
@@ -1811,51 +1811,51 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
   const [familyNameDraft, setFamilyNameDraft] = useState(settings.familyName || "");
   return (
     <div>
-      <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold pt-2 pb-3">Pengaturan</h1>
+      <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[24px] font-extrabold pt-2 pb-3">Pengaturan</h1>
 
-      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Nama Keluarga</p>
-      <p style={{ color: "#8A8360" }} className="text-[11px] mb-2">Tampil sebagai identitas di halaman Beranda.</p>
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-1">Nama Keluarga</p>
+      <p style={{ color: "#8A8360" }} className="text-[15px] mb-2">Tampil sebagai identitas di halaman Beranda.</p>
       <div className="rounded-2xl p-3 mb-6 flex items-center gap-2" style={{ background: "#FFFDF7" }}>
         <input
           value={familyNameDraft}
           onChange={(e) => setFamilyNameDraft(e.target.value)}
           onBlur={() => onUpdateFamilyName(familyNameDraft.trim())}
           placeholder="misal: Keluarga Nugraha"
-          className="flex-1 min-w-0 rounded-xl px-3 py-2 text-sm outline-none"
+          className="flex-1 min-w-0 rounded-xl px-3 py-2 text-[18px] outline-none"
           style={{ background: "#F1ECDB", color: INK }}
         />
       </div>
 
-      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Akun</p>
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-1">Akun</p>
       <div className="rounded-2xl p-3 mb-6 flex items-center gap-2" style={{ background: "#FFFDF7" }}>
         <div className="flex-1 min-w-0">
-          <p style={{ color: "#8A8360" }} className="text-[10px]">Masuk sebagai</p>
-          <p style={{ color: INK }} className="text-xs font-semibold truncate">{userEmail}</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px]">Masuk sebagai</p>
+          <p style={{ color: INK }} className="text-[16px] font-semibold truncate">{userEmail}</p>
         </div>
         <button
           onClick={onLogout}
-          className="shrink-0 rounded-full px-3 py-1.5 text-xs font-bold"
+          className="shrink-0 rounded-full px-3 py-1.5 text-[16px] font-bold"
           style={{ background: "#FDECEA", color: DANGER }}
         >
           Keluar
         </button>
       </div>
 
-      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Lokasi untuk Jadwal Shalat</p>
-      <p style={{ color: "#8A8360" }} className="text-[11px] mb-2">Dipakai untuk menghitung jadwal shalat di beranda (dihitung sendiri, tidak perlu internet).</p>
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-1">Lokasi untuk Jadwal Shalat</p>
+      <p style={{ color: "#8A8360" }} className="text-[15px] mb-2">Dipakai untuk menghitung jadwal shalat di beranda (dihitung sendiri, tidak perlu internet).</p>
       <div className="rounded-2xl p-3 mb-6" style={{ background: "#FFFDF7" }}>
         {location ? (
-          <p style={{ color: INK }} className="text-xs font-semibold mb-2">📍 Lokasi tersimpan: {location.lat.toFixed(3)}, {location.lon.toFixed(3)}</p>
+          <p style={{ color: INK }} className="text-[16px] font-semibold mb-2">📍 Lokasi tersimpan: {location.lat.toFixed(3)}, {location.lon.toFixed(3)}</p>
         ) : (
-          <p style={{ color: "#8A8360" }} className="text-xs mb-2">Lokasi belum diatur.</p>
+          <p style={{ color: "#8A8360" }} className="text-[16px] mb-2">Lokasi belum diatur.</p>
         )}
         {locationStatus === "error" && (
-          <p style={{ color: DANGER }} className="text-[11px] mb-2">Deteksi otomatis gagal (izin lokasi ditolak/tidak didukung). Isi lintang & bujur manual di bawah.</p>
+          <p style={{ color: DANGER }} className="text-[15px] mb-2">Deteksi otomatis gagal (izin lokasi ditolak/tidak didukung). Isi lintang & bujur manual di bawah.</p>
         )}
         <button
           onClick={onDetectLocation}
           disabled={locationStatus === "locating"}
-          className="w-full rounded-xl py-2 text-xs font-bold text-white mb-2"
+          className="w-full rounded-xl py-2 text-[16px] font-bold text-white mb-2"
           style={{ background: locationStatus === "locating" ? "#C9BE93" : "#00B8A9" }}
         >
           {locationStatus === "locating" ? "Mendeteksi…" : "📍 Deteksi Lokasi Otomatis"}
@@ -1866,7 +1866,7 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
             onChange={(e) => setManualLoc({ ...manualLoc, lat: e.target.value })}
             placeholder="Lintang (misal -6.20)"
             inputMode="decimal"
-            className="flex-1 rounded-xl px-2.5 py-1.5 text-xs outline-none"
+            className="flex-1 rounded-xl px-2.5 py-1.5 text-[16px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
           <input
@@ -1874,7 +1874,7 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
             onChange={(e) => setManualLoc({ ...manualLoc, lon: e.target.value })}
             placeholder="Bujur (misal 106.84)"
             inputMode="decimal"
-            className="flex-1 rounded-xl px-2.5 py-1.5 text-xs outline-none"
+            className="flex-1 rounded-xl px-2.5 py-1.5 text-[16px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
           <button
@@ -1882,7 +1882,7 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
               const lat = parseFloat(manualLoc.lat), lon = parseFloat(manualLoc.lon);
               if (!isNaN(lat) && !isNaN(lon)) onSetManualLocation(lat, lon);
             }}
-            className="rounded-xl px-3 text-xs font-bold text-white shrink-0"
+            className="rounded-xl px-3 text-[16px] font-bold text-white shrink-0"
             style={{ background: INK }}
           >
             Simpan
@@ -1891,27 +1891,27 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
       </div>
 
       <div className="flex items-center justify-between mb-2">
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">Kelola Anak</p>
-        <button onClick={onAddChild} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-white" style={{ background: accent }}>
+        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">Kelola Anak</p>
+        <button onClick={onAddChild} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[16px] font-bold text-white" style={{ background: accent }}>
           <Plus size={13} /> Anak
         </button>
       </div>
       <div className="flex flex-col gap-2 mb-6">
-        {data.children.length === 0 && <p style={{ color: "#8A8360" }} className="text-xs">Belum ada data anak.</p>}
+        {data.children.length === 0 && <p style={{ color: "#8A8360" }} className="text-[16px]">Belum ada data anak.</p>}
         {data.children.map((c) => (
           <div key={c.id} className="rounded-2xl px-3 py-2" style={{ background: "#FFFDF7" }}>
             {confirmDeleteChild && confirmDeleteChild.id === c.id ? (
               <div className="flex items-center justify-between">
-                <span style={{ color: DANGER }} className="text-xs font-bold">Hapus {c.name}?</span>
+                <span style={{ color: DANGER }} className="text-[16px] font-bold">Hapus {c.name}?</span>
                 <div className="flex gap-2">
-                  <button onClick={onCancelDelete} className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: "#F1ECDB", color: INK }}>Batal</button>
-                  <button onClick={onConfirmDelete} className="text-xs font-semibold px-2.5 py-1 rounded-full text-white" style={{ background: DANGER }}>Hapus</button>
+                  <button onClick={onCancelDelete} className="text-[16px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "#F1ECDB", color: INK }}>Batal</button>
+                  <button onClick={onConfirmDelete} className="text-[16px] font-semibold px-2.5 py-1 rounded-full text-white" style={{ background: DANGER }}>Hapus</button>
                 </div>
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Avatar emoji={c.emoji} color={c.color} size={32} />
-                <span style={{ color: INK }} className="text-sm font-bold flex-1">{c.name}</span>
+                <span style={{ color: INK }} className="text-[18px] font-bold flex-1">{c.name}</span>
                 <button onClick={() => onEditChild(c)} className="p-1.5 rounded-full" style={{ background: "#F1ECDB" }}>
                   <Pencil size={12} color={INK} />
                 </button>
@@ -1926,29 +1926,29 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
 
       <div className="flex items-center justify-between rounded-2xl px-3 py-3 mb-6" style={{ background: "#FFFDF7" }}>
         <div>
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">Mode Kompetisi Antar Saudara</p>
-          <p style={{ color: "#8A8360" }} className="text-[10px] mt-0.5">Tampilkan papan peringkat mingguan di beranda</p>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">Mode Kompetisi Antar Saudara</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-0.5">Tampilkan papan peringkat mingguan di beranda</p>
         </div>
         <button
           onClick={onToggleLeaderboard}
-          className="rounded-full px-3 py-1.5 text-xs font-bold shrink-0"
+          className="rounded-full px-3 py-1.5 text-[16px] font-bold shrink-0"
           style={{ background: settings.leaderboardEnabled ? "#00B8A9" : "#EFEAD8", color: settings.leaderboardEnabled ? "#fff" : "#8A8360" }}
         >
           {settings.leaderboardEnabled ? "Aktif" : "Nonaktif"}
         </button>
       </div>
 
-      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-1">Kategori Waktu</p>
-      <p style={{ color: "#8A8360" }} className="text-[11px] mb-2">Atur nama, warna, dan rentang jam tiap kategori untuk mengelompokkan tugas harian.</p>
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-1">Kategori Waktu</p>
+      <p style={{ color: "#8A8360" }} className="text-[15px] mb-2">Atur nama, warna, dan rentang jam tiap kategori untuk mengelompokkan tugas harian.</p>
       <div className="flex flex-col gap-2 mb-3">
         {periods.map((period, idx) => (
           <div key={period.key} className="rounded-2xl p-3" style={{ background: "#FFFDF7" }}>
             {confirmDeletePeriod === period.key ? (
               <div className="flex items-center justify-between">
-                <span style={{ color: DANGER }} className="text-xs font-bold">Hapus "{period.label}"? Tugasnya pindah ke kategori pertama.</span>
+                <span style={{ color: DANGER }} className="text-[16px] font-bold">Hapus "{period.label}"? Tugasnya pindah ke kategori pertama.</span>
                 <div className="flex gap-2 shrink-0 ml-2">
-                  <button onClick={() => setConfirmDeletePeriod(null)} className="text-xs font-semibold px-2.5 py-1 rounded-full" style={{ background: "#F1ECDB", color: INK }}>Batal</button>
-                  <button onClick={() => { onDeletePeriod(period.key); setConfirmDeletePeriod(null); }} className="text-xs font-semibold px-2.5 py-1 rounded-full text-white" style={{ background: DANGER }}>Hapus</button>
+                  <button onClick={() => setConfirmDeletePeriod(null)} className="text-[16px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "#F1ECDB", color: INK }}>Batal</button>
+                  <button onClick={() => { onDeletePeriod(period.key); setConfirmDeletePeriod(null); }} className="text-[16px] font-semibold px-2.5 py-1 rounded-full text-white" style={{ background: DANGER }}>Hapus</button>
                 </div>
               </div>
             ) : (
@@ -1964,7 +1964,7 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
                   <input
                     value={period.label}
                     onChange={(e) => onUpdatePeriod(period.key, { label: e.target.value })}
-                    className="flex-1 min-w-0 rounded-xl px-2.5 py-1.5 text-xs font-bold outline-none"
+                    className="flex-1 min-w-0 rounded-xl px-2.5 py-1.5 text-[16px] font-bold outline-none"
                     style={{ background: "#F1ECDB", color: INK }}
                   />
                   <div className="flex flex-col gap-0.5 shrink-0">
@@ -1990,15 +1990,15 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
                     type="time"
                     value={period.start}
                     onChange={(e) => onUpdatePeriod(period.key, { start: e.target.value })}
-                    className="rounded-xl px-2 py-1.5 text-xs outline-none"
+                    className="rounded-xl px-2 py-1.5 text-[16px] outline-none"
                     style={{ background: "#F1ECDB", color: INK, width: 84 }}
                   />
-                  <span style={{ color: "#8A8360" }} className="text-xs">–</span>
+                  <span style={{ color: "#8A8360" }} className="text-[16px]">–</span>
                   <input
                     type="time"
                     value={period.end}
                     onChange={(e) => onUpdatePeriod(period.key, { end: e.target.value })}
-                    className="rounded-xl px-2 py-1.5 text-xs outline-none"
+                    className="rounded-xl px-2 py-1.5 text-[16px] outline-none"
                     style={{ background: "#F1ECDB", color: INK, width: 84 }}
                   />
                 </div>
@@ -2007,18 +2007,18 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
           </div>
         ))}
       </div>
-      <button onClick={onAddPeriod} className="flex items-center justify-center gap-1 w-full rounded-2xl py-2.5 text-xs font-bold mb-6" style={{ border: "2px dashed #C9BE93", color: "#8A8360" }}>
+      <button onClick={onAddPeriod} className="flex items-center justify-center gap-1 w-full rounded-2xl py-2.5 text-[16px] font-bold mb-6" style={{ border: "2px dashed #C9BE93", color: "#8A8360" }}>
         <Plus size={14} /> Tambah Kategori Waktu
       </button>
 
-      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm mb-2">Ubah PIN Orang Tua</p>
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] mb-2">Ubah PIN Orang Tua</p>
       <div className="rounded-2xl p-3 flex flex-col gap-2" style={{ background: "#FFFDF7" }}>
         <input
           value={newPin.a}
           onChange={(e) => setNewPin({ ...newPin, a: e.target.value.replace(/\D/g, "").slice(0, 4) })}
           placeholder="PIN baru (4 digit)"
           inputMode="numeric"
-          className="rounded-xl px-3 py-2 text-sm outline-none"
+          className="rounded-xl px-3 py-2 text-[18px] outline-none"
           style={{ background: "#F1ECDB", color: INK }}
         />
         <input
@@ -2026,15 +2026,15 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
           onChange={(e) => setNewPin({ ...newPin, b: e.target.value.replace(/\D/g, "").slice(0, 4) })}
           placeholder="Ulangi PIN baru"
           inputMode="numeric"
-          className="rounded-xl px-3 py-2 text-sm outline-none"
+          className="rounded-xl px-3 py-2 text-[18px] outline-none"
           style={{ background: "#F1ECDB", color: INK }}
         />
-        {newPin.a.length === 4 && newPin.a !== newPin.b && <p style={{ color: DANGER }} className="text-[11px]">PIN tidak sama</p>}
-        {pinSaved && <p style={{ color: "#00B8A9" }} className="text-[11px] font-semibold">PIN berhasil diperbarui ✓</p>}
+        {newPin.a.length === 4 && newPin.a !== newPin.b && <p style={{ color: DANGER }} className="text-[15px]">PIN tidak sama</p>}
+        {pinSaved && <p style={{ color: "#00B8A9" }} className="text-[15px] font-semibold">PIN berhasil diperbarui ✓</p>}
         <button
           onClick={onSavePin}
           disabled={!(newPin.a.length === 4 && newPin.a === newPin.b)}
-          className="rounded-xl py-2 text-sm font-bold text-white mt-1"
+          className="rounded-xl py-2 text-[18px] font-bold text-white mt-1"
           style={{ background: newPin.a.length === 4 && newPin.a === newPin.b ? INK : "#C9BE93" }}
         >
           Simpan PIN
@@ -2042,15 +2042,15 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
       </div>
 
       <div className="flex items-center justify-between mt-6 mb-2">
-        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">Catatan Perilaku</p>
-        <button onClick={onOpenViolationSheet} disabled={data.children.length === 0} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-white" style={{ background: data.children.length === 0 ? "#C9BE93" : DANGER }}>
+        <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">Catatan Perilaku</p>
+        <button onClick={onOpenViolationSheet} disabled={data.children.length === 0} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[16px] font-bold text-white" style={{ background: data.children.length === 0 ? "#C9BE93" : DANGER }}>
           <Plus size={13} /> Catat
         </button>
       </div>
-      <p style={{ color: "#8A8360" }} className="text-[11px] mb-2">Mencatat pelanggaran (misal berbohong) dan mengurangi sebagian poin hari ini & minggu ini secara manual.</p>
+      <p style={{ color: "#8A8360" }} className="text-[15px] mb-2">Mencatat pelanggaran (misal berbohong) dan mengurangi sebagian poin hari ini & minggu ini secara manual.</p>
       <div className="flex flex-col gap-2">
         {data.children.flatMap((c) => (c.violations || []).map((v) => ({ ...v, child: c }))).length === 0 && (
-          <p style={{ color: "#8A8360" }} className="text-xs">Belum ada catatan.</p>
+          <p style={{ color: "#8A8360" }} className="text-[16px]">Belum ada catatan.</p>
         )}
         {data.children
           .flatMap((c) => (c.violations || []).map((v) => ({ ...v, child: c })))
@@ -2060,13 +2060,13 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
               <div className="flex items-center gap-2">
                 <Avatar emoji={v.child.emoji} color={v.child.color} size={26} />
                 <div className="flex-1 min-w-0">
-                  <p style={{ color: INK }} className="text-xs font-bold truncate">{v.note}</p>
-                  <p style={{ color: "#8A8360" }} className="text-[10px]">{v.child.name} · {v.date} · -{v.points} poin{v.resolved ? ` · +${v.refund} dikembalikan` : ""}</p>
+                  <p style={{ color: INK }} className="text-[16px] font-bold truncate">{v.note}</p>
+                  <p style={{ color: "#8A8360" }} className="text-[14px]">{v.child.name} · {v.date} · -{v.points} poin{v.resolved ? ` · +${v.refund} dikembalikan` : ""}</p>
                 </div>
                 {v.resolved ? (
-                  <span style={{ color: "#00B8A9" }} className="text-[10px] font-bold shrink-0">Selesai ✓</span>
+                  <span style={{ color: "#00B8A9" }} className="text-[14px] font-bold shrink-0">Selesai ✓</span>
                 ) : (
-                  <button onClick={() => onResolveViolation(v.child.id, v.id)} className="text-[10px] font-bold px-2.5 py-1.5 rounded-full text-white shrink-0" style={{ background: "#00B8A9" }}>
+                  <button onClick={() => onResolveViolation(v.child.id, v.id)} className="text-[14px] font-bold px-2.5 py-1.5 rounded-full text-white shrink-0" style={{ background: "#00B8A9" }}>
                     Sudah Minta Maaf
                   </button>
                 )}
@@ -2102,8 +2102,8 @@ function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMo
         >
           <GripVertical size={15} />
         </div>
-        <span style={{ fontSize: 14 }} className="shrink-0">{task.emoji}</span>
-        <span style={{ color: task.active === false ? "#B8AF8F" : INK }} className="text-xs font-semibold flex-1 truncate">{task.label}</span>
+        <span style={{ fontSize: 18 }} className="shrink-0">{task.emoji}</span>
+        <span style={{ color: task.active === false ? "#B8AF8F" : INK }} className="text-[16px] font-semibold flex-1 truncate">{task.label}</span>
         <button onClick={onToggleActive} className="rounded-full flex items-center justify-center shrink-0" style={{ width: 22, height: 22, background: task.active === false ? "#EFEAD8" : meta.color }}>
           {task.active !== false && <Check size={12} color="#fff" strokeWidth={3} />}
         </button>
@@ -2119,10 +2119,10 @@ function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMo
       {expanded && (
         <div className="mt-1 ml-6 p-2 rounded-xl flex flex-col gap-2" style={{ background: "#F1ECDB" }}>
           <div className="flex items-center justify-between">
-            <span style={{ color: INK }} className="text-[11px] font-semibold">📷 Perlu foto bukti?</span>
+            <span style={{ color: INK }} className="text-[15px] font-semibold">📷 Perlu foto bukti?</span>
             <button
               onClick={() => onUpdateField({ needsPhoto: !task.needsPhoto })}
-              className="rounded-full px-2.5 py-1 text-[10px] font-bold"
+              className="rounded-full px-2.5 py-1 text-[14px] font-bold"
               style={{ background: task.needsPhoto ? "#00B8A9" : "#EFEAD8", color: task.needsPhoto ? "#fff" : "#8A8360" }}
             >
               {task.needsPhoto ? "Ya" : "Tidak"}
@@ -2133,7 +2133,7 @@ function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMo
             onChange={(e) => onUpdateField({ why: e.target.value })}
             placeholder="Kenapa tugas ini penting? (opsional, muncul sebagai info untuk anak)"
             rows={2}
-            className="rounded-lg px-2 py-1.5 text-[11px] outline-none resize-none"
+            className="rounded-lg px-2 py-1.5 text-[15px] outline-none resize-none"
             style={{ background: "#FFFDF7", color: INK }}
           />
         </div>
@@ -2205,19 +2205,19 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
     <Sheet title={isNew ? "Tambah Anak" : "Edit Data Anak"} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Nama</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Nama</label>
           <input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="Nama anak"
-            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
         </div>
 
         <div className="flex items-center gap-4">
           <div>
-            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Avatar</label>
+            <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Avatar</label>
             <div className="mt-1.5">
               <IconPickerButton
                 value={form.emoji}
@@ -2229,7 +2229,7 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
             </div>
           </div>
           <div>
-            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Warna</label>
+            <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Warna</label>
             <div className="mt-1.5">
               <ColorPickerButton
                 value={form.color}
@@ -2242,20 +2242,20 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
         </div>
 
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Target Poin Mingguan & Hadiah</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Target Poin Mingguan & Hadiah</label>
           <div className="flex gap-2 mt-1">
             <input
               type="number"
               value={form.weeklyGoal}
               onChange={(e) => setForm({ ...form, weeklyGoal: Number(e.target.value) || 0 })}
-              className="w-24 rounded-xl px-3 py-2 text-sm outline-none"
+              className="w-24 rounded-xl px-3 py-2 text-[18px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
             <input
               value={form.weeklyReward}
               onChange={(e) => setForm({ ...form, weeklyReward: e.target.value })}
               placeholder="misal: Es krim & nonton bareng"
-              className="flex-1 rounded-xl px-3 py-2 text-sm outline-none"
+              className="flex-1 rounded-xl px-3 py-2 text-[18px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
           </div>
@@ -2263,14 +2263,14 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
 
         <div>
           <div className="flex items-center justify-between">
-            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Daftar Tugas Harian</label>
+            <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Daftar Tugas Harian</label>
             {!isNew && siblingCount > 1 && (
-              <button onClick={() => onApplyAll(form.id)} className="text-[11px] font-bold px-2.5 py-1 rounded-full text-white" style={{ background: "#00B8A9" }}>
+              <button onClick={() => onApplyAll(form.id)} className="text-[15px] font-bold px-2.5 py-1 rounded-full text-white" style={{ background: "#00B8A9" }}>
                 Terapkan ke Semua Anak
               </button>
             )}
           </div>
-          <p style={{ color: "#8A8360" }} className="text-[10px] mt-1 mb-2">Tahan ikon ⠿ lalu geser untuk mengubah urutan tugas.</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-1 mb-2">Tahan ikon ⠿ lalu geser untuk mengubah urutan tugas.</p>
           {periods.map((period) => {
             const time = period.key;
             const groupTasks = form.tasks.filter((t) => t.time === time);
@@ -2278,8 +2278,8 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
             return (
               <div key={time} className="mb-3">
                 <div className="flex items-center gap-1.5 mb-1.5 px-0.5">
-                  <span style={{ fontSize: 12 }}>{period.emoji}</span>
-                  <span style={{ color: period.color }} className="text-[11px] font-bold">{period.label}</span>
+                  <span style={{ fontSize: 16 }}>{period.emoji}</span>
+                  <span style={{ color: period.color }} className="text-[15px] font-bold">{period.label}</span>
                 </div>
                 <div className="flex flex-col gap-1.5">
                   {groupTasks.map((t) => (
@@ -2308,27 +2308,27 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
               value={newTaskDraft.label}
               onChange={(e) => setNewTaskDraft({ ...newTaskDraft, label: e.target.value })}
               placeholder="Tambah tugas baru"
-              className="flex-1 rounded-xl px-3 py-2 text-xs outline-none"
+              className="flex-1 rounded-xl px-3 py-2 text-[16px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
             <select
               value={newTaskDraft.time}
               onChange={(e) => setNewTaskDraft({ ...newTaskDraft, time: e.target.value })}
-              className="rounded-xl px-2 text-xs outline-none"
+              className="rounded-xl px-2 text-[16px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             >
               {periods.map((p) => (
                 <option key={p.key} value={p.key}>{p.label}</option>
               ))}
             </select>
-            <button onClick={addCustom} className="rounded-xl px-3 text-white font-bold text-xs" style={{ background: INK }}>+</button>
+            <button onClick={addCustom} className="rounded-xl px-3 text-white font-bold text-[16px]" style={{ background: INK }}>+</button>
           </div>
         </div>
 
         <button
           onClick={() => form.name.trim() && onSave(form)}
           disabled={!form.name.trim()}
-          className="rounded-xl py-3 text-sm font-bold text-white mt-1"
+          className="rounded-xl py-3 text-[18px] font-bold text-white mt-1"
           style={{ background: form.name.trim() ? accent : "#C9BE93" }}
         >
           Simpan
@@ -2351,8 +2351,8 @@ function NotificationBanner({ event, data, onDismiss }) {
           <Bell size={16} color={INK} />
         </div>
         <div className="flex-1 min-w-0">
-          <p style={{ color: "#fff", fontFamily: "'Baloo 2', sans-serif" }} className="text-sm font-bold truncate">{event.title}</p>
-          <p style={{ color: "#C9D2F0" }} className="text-[11px]">
+          <p style={{ color: "#fff", fontFamily: "'Baloo 2', sans-serif" }} className="text-[18px] font-bold truncate">{event.title}</p>
+          <p style={{ color: "#C9D2F0" }} className="text-[15px]">
             {untilText}{who ? ` · ${who.name}` : " · Semua Keluarga"}{event.time ? ` · ${event.time}` : ""}
           </p>
         </div>
@@ -2371,13 +2371,13 @@ function ViolationSheet({ children, value, setValue, onClose, onSave }) {
     <Sheet title="Catat Pelanggaran" onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Anak</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Anak</label>
           <div className="flex flex-wrap gap-2 mt-1">
             {children.map((c) => (
               <button
                 key={c.id}
                 onClick={() => setValue({ ...value, childId: c.id })}
-                className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold"
+                className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[16px] font-bold"
                 style={{ background: value.childId === c.id ? c.color : "#F1ECDB", color: value.childId === c.id ? "#fff" : INK }}
               >
                 {c.emoji} {c.name}
@@ -2386,28 +2386,28 @@ function ViolationSheet({ children, value, setValue, onClose, onSave }) {
           </div>
         </div>
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Catatan Pelanggaran</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Catatan Pelanggaran</label>
           <textarea
             value={value.note}
             onChange={(e) => setValue({ ...value, note: e.target.value })}
             placeholder="misal: Berbohong soal PR sekolah"
             rows={3}
-            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none resize-none"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none resize-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
         </div>
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Poin Dikurangi</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Poin Dikurangi</label>
           <input
             type="number"
             value={value.points}
             onChange={(e) => setValue({ ...value, points: Number(e.target.value) || 0 })}
-            className="w-24 mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            className="w-24 mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
-          <p style={{ color: "#8A8360" }} className="text-[10px] mt-1">Memotong poin hari ini & poin minggu ini. Poin total (maskot) tidak berubah.</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-1">Memotong poin hari ini & poin minggu ini. Poin total (maskot) tidak berubah.</p>
         </div>
-        <button onClick={onSave} disabled={!canSave} className="rounded-xl py-3 text-sm font-bold text-white mt-1" style={{ background: canSave ? DANGER : "#C9BE93" }}>
+        <button onClick={onSave} disabled={!canSave} className="rounded-xl py-3 text-[18px] font-bold text-white mt-1" style={{ background: canSave ? DANGER : "#C9BE93" }}>
           Simpan Catatan
         </button>
       </div>
@@ -2422,32 +2422,32 @@ function EventSheet({ day, children, value, setValue, isEditing, onClose, onSave
     <Sheet title={isEditing ? "Edit Acara" : `Tambah Acara · ${d.getDate()} ${MONTH_NAMES[d.getMonth()]}`} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Judul Acara</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Judul Acara</label>
           <input
             value={value.title}
             onChange={(e) => setValue({ ...value, title: e.target.value })}
             placeholder="misal: Ulang tahun Kakak"
-            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
         </div>
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Jam Acara (opsional)</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Jam Acara (opsional)</label>
           <input
             type="time"
             value={value.time}
             onChange={(e) => setValue({ ...value, time: e.target.value })}
-            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
         </div>
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Pengingat</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Pengingat</label>
           <select
             value={value.reminderMinutes}
             onChange={(e) => setValue({ ...value, reminderMinutes: Number(e.target.value) })}
             disabled={!value.time}
-            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
             style={{ background: "#F1ECDB", color: INK, opacity: value.time ? 1 : 0.5 }}
           >
             <option value={0}>Tidak ada</option>
@@ -2458,23 +2458,23 @@ function EventSheet({ day, children, value, setValue, isEditing, onClose, onSave
             <option value={1440}>1 hari sebelum</option>
           </select>
           {!value.time && (
-            <p style={{ color: "#8A8360" }} className="text-[10px] mt-1">Isi jam acara dulu untuk mengatur pengingat.</p>
+            <p style={{ color: "#8A8360" }} className="text-[14px] mt-1">Isi jam acara dulu untuk mengatur pengingat.</p>
           )}
         </div>
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Untuk Siapa</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Untuk Siapa</label>
           <div className="flex flex-wrap gap-2 mt-1">
-            <button onClick={() => setValue({ ...value, who: "all" })} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: value.who === "all" ? INK : "#F1ECDB", color: value.who === "all" ? "#fff" : INK }}>
+            <button onClick={() => setValue({ ...value, who: "all" })} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[16px] font-bold" style={{ background: value.who === "all" ? INK : "#F1ECDB", color: value.who === "all" ? "#fff" : INK }}>
               <Users size={12} /> Semua Keluarga
             </button>
             {children.map((c) => (
-              <button key={c.id} onClick={() => setValue({ ...value, who: c.id })} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold" style={{ background: value.who === c.id ? c.color : "#F1ECDB", color: value.who === c.id ? "#fff" : INK }}>
+              <button key={c.id} onClick={() => setValue({ ...value, who: c.id })} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[16px] font-bold" style={{ background: value.who === c.id ? c.color : "#F1ECDB", color: value.who === c.id ? "#fff" : INK }}>
                 {c.emoji} {c.name}
               </button>
             ))}
           </div>
         </div>
-        <button onClick={onSave} disabled={!value.title.trim()} className="rounded-xl py-3 text-sm font-bold text-white mt-1" style={{ background: value.title.trim() ? "#00B8A9" : "#C9BE93" }}>
+        <button onClick={onSave} disabled={!value.title.trim()} className="rounded-xl py-3 text-[18px] font-bold text-white mt-1" style={{ background: value.title.trim() ? "#00B8A9" : "#C9BE93" }}>
           {isEditing ? "Simpan Perubahan" : "Simpan Acara"}
         </button>
       </div>
@@ -2506,11 +2506,11 @@ function HomeItemCard({ item, onMarkDone, onEdit, onDelete }) {
   return (
     <div className="rounded-3xl p-3" style={{ background: "#FFFDF7", border: overdue ? `2px solid ${DANGER}` : "2px solid transparent" }}>
       <div className="flex items-center gap-2.5">
-        <div className="rounded-full flex items-center justify-center shrink-0" style={{ width: 40, height: 40, background: item.color, fontSize: 18 }}>{item.emoji}</div>
+        <div className="rounded-full flex items-center justify-center shrink-0" style={{ width: 40, height: 40, background: item.color, fontSize: 22 }}>{item.emoji}</div>
         <div className="flex-1 min-w-0">
-          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm truncate">{item.name} <span style={{ color: "#8A8360", fontWeight: 600, fontSize: 11 }}>({item.quantity} pcs)</span></p>
-          <p style={{ color: statusColor }} className="text-[11px] font-bold mt-0.5">{statusText}</p>
-          <p style={{ color: "#8A8360" }} className="text-[10px] mt-0.5">Terakhir: {lastDone.getDate()} {MONTH_NAMES[lastDone.getMonth()]} · Jatuh tempo: {d.getDate()} {MONTH_NAMES[d.getMonth()]} · tiap {item.intervalDays} hari</p>
+          <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px] truncate">{item.name} <span style={{ color: "#8A8360", fontWeight: 600, fontSize: 15 }}>({item.quantity} pcs)</span></p>
+          <p style={{ color: statusColor }} className="text-[15px] font-bold mt-0.5">{statusText}</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-0.5">Terakhir: {lastDone.getDate()} {MONTH_NAMES[lastDone.getMonth()]} · Jatuh tempo: {d.getDate()} {MONTH_NAMES[d.getMonth()]} · tiap {item.intervalDays} hari</p>
         </div>
         <div className="flex flex-col items-end gap-1.5 shrink-0">
           <button onClick={() => onEdit(item)} className="p-1.5 rounded-full" style={{ background: "#F1ECDB" }}>
@@ -2521,7 +2521,7 @@ function HomeItemCard({ item, onMarkDone, onEdit, onDelete }) {
           </button>
         </div>
       </div>
-      <button onClick={() => onMarkDone(item.id)} className="w-full mt-2.5 rounded-xl py-2 text-xs font-bold text-white flex items-center justify-center gap-1.5" style={{ background: "#00B8A9" }}>
+      <button onClick={() => onMarkDone(item.id)} className="w-full mt-2.5 rounded-xl py-2 text-[16px] font-bold text-white flex items-center justify-center gap-1.5" style={{ background: "#00B8A9" }}>
         <Check size={14} strokeWidth={3} /> Tandai Selesai
       </button>
     </div>
@@ -2538,19 +2538,19 @@ function HomeView({ homeItems, onMarkDone, onAdd, onEdit, onDelete }) {
   return (
     <div>
       <div className="flex items-center justify-between pt-2 pb-3">
-        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold">Rumah</h1>
-        <button onClick={onAdd} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold text-white" style={{ background: "#00B8A9" }}>
+        <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[24px] font-extrabold">Rumah</h1>
+        <button onClick={onAdd} className="flex items-center gap-1 px-3 py-1.5 rounded-full text-[16px] font-bold text-white" style={{ background: "#00B8A9" }}>
           <Plus size={14} /> Tambah
         </button>
       </div>
-      <p style={{ color: "#8A8360" }} className="text-[11px] mb-3">Pengingat rutinitas rumah tangga — cuci handuk, ganti sikat gigi, ganti seprai, dsb. Siapa saja bisa menandai selesai.</p>
+      <p style={{ color: "#8A8360" }} className="text-[15px] mb-3">Pengingat rutinitas rumah tangga — cuci handuk, ganti sikat gigi, ganti seprai, dsb. Siapa saja bisa menandai selesai.</p>
 
       {sorted.length === 0 ? (
         <div className="flex flex-col items-center text-center px-4 py-10 rounded-3xl" style={{ background: "#FFFDF7", border: "2px dashed #E3D9B4" }}>
-          <span style={{ fontSize: 40 }}>🏠</span>
+          <span style={{ fontSize: 44 }}>🏠</span>
           <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold mt-2">Belum ada pengingat rumah</p>
-          <p style={{ color: "#8A8360" }} className="text-sm mt-1 mb-4">Tambahkan barang yang perlu dicuci/diganti berkala.</p>
-          <button onClick={onAdd} style={{ background: "#00B8A9" }} className="px-5 py-2.5 rounded-full text-white font-bold text-sm flex items-center gap-1">
+          <p style={{ color: "#8A8360" }} className="text-[18px] mt-1 mb-4">Tambahkan barang yang perlu dicuci/diganti berkala.</p>
+          <button onClick={onAdd} style={{ background: "#00B8A9" }} className="px-5 py-2.5 rounded-full text-white font-bold text-[18px] flex items-center gap-1">
             <Plus size={16} /> Tambah Item
           </button>
         </div>
@@ -2576,25 +2576,25 @@ function HomeItemSheet({ initial, onClose, onSave }) {
     <Sheet title={isNew ? "Tambah Item Rumah" : "Edit Item Rumah"} onClose={onClose}>
       <div className="flex flex-col gap-4">
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Nama</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Nama</label>
           <input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             placeholder="misal: Cuci Handuk"
-            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
         </div>
 
         <div className="flex items-center gap-4">
           <div>
-            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Ikon</label>
+            <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Ikon</label>
             <div className="mt-1.5">
               <IconPickerButton value={form.emoji} options={HOME_ITEM_ICONS} activeColor={form.color} onChange={(em) => setForm({ ...form, emoji: em })} size={44} />
             </div>
           </div>
           <div>
-            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Warna</label>
+            <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Warna</label>
             <div className="mt-1.5">
               <ColorPickerButton value={form.color} options={PALETTE_COLORS} onChange={(c) => setForm({ ...form, color: c })} size={38} />
             </div>
@@ -2603,43 +2603,43 @@ function HomeItemSheet({ initial, onClose, onSave }) {
 
         <div className="flex gap-3">
           <div className="flex-1">
-            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Jumlah (pcs)</label>
+            <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Jumlah (pcs)</label>
             <input
               type="number"
               min={1}
               value={form.quantity}
               onChange={(e) => setForm({ ...form, quantity: Math.max(1, Number(e.target.value) || 1) })}
-              className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+              className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
           </div>
           <div className="flex-1">
-            <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Setiap berapa hari</label>
+            <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Setiap berapa hari</label>
             <input
               type="number"
               min={1}
               value={form.intervalDays}
               onChange={(e) => setForm({ ...form, intervalDays: Math.max(1, Number(e.target.value) || 1) })}
-              className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+              className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
           </div>
         </div>
 
         <div>
-          <label style={{ color: "#8A8360" }} className="text-xs font-semibold">Terakhir Dilakukan</label>
+          <label style={{ color: "#8A8360" }} className="text-[16px] font-semibold">Terakhir Dilakukan</label>
           <input
             type="date"
             value={form.lastDoneDate}
             max={localDateStr()}
             onChange={(e) => setForm({ ...form, lastDoneDate: e.target.value })}
-            className="w-full mt-1 rounded-xl px-3 py-2 text-sm outline-none"
+            className="w-full mt-1 rounded-xl px-3 py-2 text-[18px] outline-none"
             style={{ background: "#F1ECDB", color: INK }}
           />
-          <p style={{ color: "#8A8360" }} className="text-[10px] mt-1">Dipakai untuk menghitung kapan jatuh tempo berikutnya. Ubah kalau sudah dilakukan sebelum hari ini.</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-1">Dipakai untuk menghitung kapan jatuh tempo berikutnya. Ubah kalau sudah dilakukan sebelum hari ini.</p>
         </div>
 
-        <button onClick={() => onSave(form)} disabled={!form.name.trim()} className="rounded-xl py-3 text-sm font-bold text-white mt-1" style={{ background: form.name.trim() ? "#00B8A9" : "#C9BE93" }}>
+        <button onClick={() => onSave(form)} disabled={!form.name.trim()} className="rounded-xl py-3 text-[18px] font-bold text-white mt-1" style={{ background: form.name.trim() ? "#00B8A9" : "#C9BE93" }}>
           {isNew ? "Simpan Item" : "Simpan Perubahan"}
         </button>
       </div>

@@ -23,7 +23,7 @@ function LoadingScreen() {
       className="flex items-center justify-center"
       style={{ width: "100vw", height: "100vh", background: "#FFF4D6" }}
     >
-      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-sm">
+      <p style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="font-bold text-[18px]">
         Memuat…
       </p>
     </div>
@@ -104,11 +104,11 @@ function LoginScreen() {
 
       <div className="w-full" style={{ maxWidth: 360 }}>
         <div className="text-center mb-6">
-          <span style={{ fontSize: 40 }}>🧸</span>
-          <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold mt-2">
+          <span style={{ fontSize: 44 }}>🧸</span>
+          <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[24px] font-extrabold mt-2">
             Checklist Rutinitas Keluarga
           </h1>
-          <p style={{ color: "#8A8360" }} className="text-xs mt-1">Masuk untuk mengakses data keluarga kamu.</p>
+          <p style={{ color: "#8A8360" }} className="text-[16px] mt-1">Masuk untuk mengakses data keluarga kamu.</p>
         </div>
 
         <div className="rounded-3xl p-5" style={{ background: "#FFFDF7", border: "2px solid #EFE6CE" }}>
@@ -116,14 +116,14 @@ function LoginScreen() {
             <div className="flex rounded-full p-1 mb-4" style={{ background: "#F1ECDB" }}>
               <button
                 onClick={() => { setMode("signin"); setError(""); setInfo(""); }}
-                className="flex-1 py-1.5 rounded-full text-xs font-bold"
+                className="flex-1 py-1.5 rounded-full text-[16px] font-bold"
                 style={mode === "signin" ? { background: INK, color: "#fff" } : { color: "#8A8360" }}
               >
                 Masuk
               </button>
               <button
                 onClick={() => { setMode("signup"); setError(""); setInfo(""); }}
-                className="flex-1 py-1.5 rounded-full text-xs font-bold"
+                className="flex-1 py-1.5 rounded-full text-[16px] font-bold"
                 style={mode === "signup" ? { background: INK, color: "#fff" } : { color: "#8A8360" }}
               >
                 Daftar
@@ -133,32 +133,32 @@ function LoginScreen() {
 
           {mode === "forgot" ? (
             <form onSubmit={handleForgotPassword} className="flex flex-col gap-2.5">
-              <p style={{ color: "#8A8360" }} className="text-xs mb-1">Masukkan email akun kamu, nanti dikirimkan link untuk membuat password baru.</p>
+              <p style={{ color: "#8A8360" }} className="text-[16px] mb-1">Masukkan email akun kamu, nanti dikirimkan link untuk membuat password baru.</p>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="Email"
                 autoComplete="email"
-                className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                className="w-full rounded-xl px-3 py-2.5 text-[18px] outline-none"
                 style={{ background: "#F1ECDB", color: INK }}
               />
 
-              {error && <p style={{ color: DANGER }} className="text-xs font-semibold">{error}</p>}
-              {info && <p style={{ color: "#3A8F4A" }} className="text-xs font-semibold">{info}</p>}
+              {error && <p style={{ color: DANGER }} className="text-[16px] font-semibold">{error}</p>}
+              {info && <p style={{ color: "#3A8F4A" }} className="text-[16px] font-semibold">{info}</p>}
 
               <button
                 type="submit"
                 disabled={loading}
                 style={{ background: GOLD, color: INK }}
-                className="w-full rounded-xl py-2.5 text-sm font-extrabold mt-1"
+                className="w-full rounded-xl py-2.5 text-[18px] font-extrabold mt-1"
               >
                 {loading ? "Mengirim…" : "Kirim Link Reset"}
               </button>
               <button
                 type="button"
                 onClick={() => { setMode("signin"); setError(""); setInfo(""); }}
-                className="text-xs font-bold text-center mt-1"
+                className="text-[16px] font-bold text-center mt-1"
                 style={{ color: INK }}
               >
                 ← Kembali ke Masuk
@@ -173,7 +173,7 @@ function LoginScreen() {
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
                   autoComplete="email"
-                  className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                  className="w-full rounded-xl px-3 py-2.5 text-[18px] outline-none"
                   style={{ background: "#F1ECDB", color: INK }}
                 />
                 <input
@@ -182,7 +182,7 @@ function LoginScreen() {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
                   autoComplete={mode === "signin" ? "current-password" : "new-password"}
-                  className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+                  className="w-full rounded-xl px-3 py-2.5 text-[18px] outline-none"
                   style={{ background: "#F1ECDB", color: INK }}
                 />
 
@@ -190,21 +190,21 @@ function LoginScreen() {
                   <button
                     type="button"
                     onClick={() => { setMode("forgot"); setError(""); setInfo(""); }}
-                    className="text-[11px] font-bold text-right -mt-1"
+                    className="text-[15px] font-bold text-right -mt-1"
                     style={{ color: "#8A8360" }}
                   >
                     Lupa password?
                   </button>
                 )}
 
-                {error && <p style={{ color: DANGER }} className="text-xs font-semibold">{error}</p>}
-                {info && <p style={{ color: "#3A8F4A" }} className="text-xs font-semibold">{info}</p>}
+                {error && <p style={{ color: DANGER }} className="text-[16px] font-semibold">{error}</p>}
+                {info && <p style={{ color: "#3A8F4A" }} className="text-[16px] font-semibold">{info}</p>}
 
                 <button
                   type="submit"
                   disabled={loading}
                   style={{ background: GOLD, color: INK }}
-                  className="w-full rounded-xl py-2.5 text-sm font-extrabold mt-1"
+                  className="w-full rounded-xl py-2.5 text-[18px] font-extrabold mt-1"
                 >
                   {loading ? "Memproses…" : mode === "signin" ? "Masuk" : "Buat Akun"}
                 </button>
@@ -212,13 +212,13 @@ function LoginScreen() {
 
               <div className="flex items-center gap-2 my-4">
                 <div className="flex-1 h-px" style={{ background: "#EFE6CE" }} />
-                <span style={{ color: "#8A8360" }} className="text-[10px] font-semibold">ATAU</span>
+                <span style={{ color: "#8A8360" }} className="text-[14px] font-semibold">ATAU</span>
                 <div className="flex-1 h-px" style={{ background: "#EFE6CE" }} />
               </div>
 
               <button
                 onClick={handleGoogle}
-                className="w-full rounded-xl py-2.5 text-sm font-bold flex items-center justify-center gap-2"
+                className="w-full rounded-xl py-2.5 text-[18px] font-bold flex items-center justify-center gap-2"
                 style={{ background: "#fff", color: INK, border: "1px solid #E3D9B4" }}
               >
                 <GoogleIcon />
@@ -272,11 +272,11 @@ function ResetPasswordScreen({ onDone }) {
 
       <div className="w-full" style={{ maxWidth: 360 }}>
         <div className="text-center mb-6">
-          <span style={{ fontSize: 40 }}>🔑</span>
-          <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-xl font-extrabold mt-2">
+          <span style={{ fontSize: 44 }}>🔑</span>
+          <h1 style={{ fontFamily: "'Baloo 2', sans-serif", color: INK }} className="text-[24px] font-extrabold mt-2">
             Buat Password Baru
           </h1>
-          <p style={{ color: "#8A8360" }} className="text-xs mt-1">Masukkan password baru untuk akun kamu.</p>
+          <p style={{ color: "#8A8360" }} className="text-[16px] mt-1">Masukkan password baru untuk akun kamu.</p>
         </div>
 
         <div className="rounded-3xl p-5" style={{ background: "#FFFDF7", border: "2px solid #EFE6CE" }}>
@@ -287,7 +287,7 @@ function ResetPasswordScreen({ onDone }) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password baru"
               autoComplete="new-password"
-              className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+              className="w-full rounded-xl px-3 py-2.5 text-[18px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
             <input
@@ -296,17 +296,17 @@ function ResetPasswordScreen({ onDone }) {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Ulangi password baru"
               autoComplete="new-password"
-              className="w-full rounded-xl px-3 py-2.5 text-sm outline-none"
+              className="w-full rounded-xl px-3 py-2.5 text-[18px] outline-none"
               style={{ background: "#F1ECDB", color: INK }}
             />
 
-            {error && <p style={{ color: DANGER }} className="text-xs font-semibold">{error}</p>}
+            {error && <p style={{ color: DANGER }} className="text-[16px] font-semibold">{error}</p>}
 
             <button
               type="submit"
               disabled={loading}
               style={{ background: GOLD, color: INK }}
-              className="w-full rounded-xl py-2.5 text-sm font-extrabold mt-1"
+              className="w-full rounded-xl py-2.5 text-[18px] font-extrabold mt-1"
             >
               {loading ? "Menyimpan…" : "Simpan Password"}
             </button>
