@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   Home, CalendarDays, Settings as SettingsIcon, Plus, X, Check, Star,
   Lock, ChevronLeft, ChevronRight, Award, Trash2, Pencil,
@@ -2076,20 +2076,65 @@ function SettingsView({ data, accent, userEmail, onLogout, onAddChild, onEditChi
 
 /* ---------- Draggable Task Row ---------- */
 function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMove, onDragEnd, onToggleActive, onRemove, expanded, onToggleExpand, onUpdateField, isBonus, onSetBonus }) {
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [swipeX, setSwipeX] = useState(0);
+  const swipeStart = useRef(null);
+  const swiping = useRef(false);
+
+  const onSwipeDown = (e) => {
+    if (isDragging) return;
+    swipeStart.current = { x: e.clientX, y: e.clientY };
+    swiping.current = false;
+  };
+  const onSwipeMove = (e) => {
+    if (!swipeStart.current || isDragging) return;
+    const dx = e.clientX - swipeStart.current.x;
+    const dy = e.clientY - swipeStart.current.y;
+    if (!swiping.current) {
+      if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
+      swiping.current = true;
+      e.currentTarget.setPointerCapture(e.pointerId);
+    }
+    setSwipeX(Math.min(0, Math.max(-90, dx)));
+  };
+  const endSwipe = () => {
+    if (swiping.current && swipeX <= -60) setConfirmDelete(true);
+    swipeStart.current = null;
+    swiping.current = false;
+    setSwipeX(0);
+  };
+
+  if (confirmDelete) {
+    return (
+      <div className="flex items-center justify-between rounded-xl px-2 py-2" style={{ background: "#F8F4E4" }}>
+        <span style={{ color: DANGER }} className="text-[15px] font-bold">Hapus "{task.label}"?</span>
+        <div className="flex gap-2 shrink-0 ml-2">
+          <button onClick={() => setConfirmDelete(false)} className="text-[14px] font-semibold px-2.5 py-1 rounded-full" style={{ background: "#F1ECDB", color: INK }}>Batal</button>
+          <button onClick={onRemove} className="text-[14px] font-semibold px-2.5 py-1 rounded-full text-white" style={{ background: DANGER }}>Hapus</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div
+        onPointerDown={onSwipeDown}
+        onPointerMove={onSwipeMove}
+        onPointerUp={endSwipe}
+        onPointerCancel={endSwipe}
         className="flex items-center gap-2 rounded-xl px-2 py-2"
         style={{
           background: isDragging ? "#FFFDF7" : "#F8F4E4",
-          transform: isDragging ? `translateY(${dragOffset}px) scale(1.02)` : "none",
+          transform: isDragging ? `translateY(${dragOffset}px) scale(1.02)` : swipeX ? `translateX(${swipeX}px)` : "none",
           boxShadow: isDragging ? "0 6px 14px rgba(27,37,89,0.25)" : "none",
           position: "relative",
           zIndex: isDragging ? 10 : 1,
+          touchAction: "pan-y",
         }}
       >
         <div
-          onPointerDown={(e) => { e.currentTarget.setPointerCapture(e.pointerId); onDragStart(e.clientY); }}
+          onPointerDown={(e) => { e.stopPropagation(); e.currentTarget.setPointerCapture(e.pointerId); onDragStart(e.clientY); }}
           onPointerMove={(e) => { if (isDragging) onDragMove(e.clientY); }}
           onPointerUp={onDragEnd}
           onPointerCancel={onDragEnd}
@@ -2113,11 +2158,6 @@ function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMo
         <button onClick={onToggleActive} className="rounded-full flex items-center justify-center shrink-0" style={{ width: 22, height: 22, background: task.active === false ? "#EFEAD8" : meta.color }}>
           {task.active !== false && <Check size={12} color="#fff" strokeWidth={3} />}
         </button>
-        {onRemove && (
-          <button onClick={onRemove} className="shrink-0">
-            <X size={13} color={DANGER} />
-          </button>
-        )}
         <button onClick={onToggleExpand} className="shrink-0" style={{ color: "#B8AF8F" }}>
           {expanded ? <ChevronUp size={13} /> : <ChevronDown size={13} />}
         </button>
@@ -2142,6 +2182,13 @@ function TaskEditRow({ task, meta, isDragging, dragOffset, onDragStart, onDragMo
             className="rounded-lg px-2 py-1.5 text-[15px] outline-none resize-none"
             style={{ background: "#FFFDF7", color: INK }}
           />
+          <button
+            onClick={() => setConfirmDelete(true)}
+            className="flex items-center justify-center gap-1.5 rounded-lg py-1.5 text-[14px] font-bold"
+            style={{ background: "#FBE4E3", color: DANGER }}
+          >
+            <Trash2 size={13} /> Hapus Tugas
+          </button>
         </div>
       )}
     </div>
@@ -2176,7 +2223,7 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
 
   const toggleActive = (id) => setForm((f) => ({ ...f, tasks: f.tasks.map((t) => (t.id === id ? { ...t, active: t.active === false ? true : false } : t)) }));
   const setBonusTask = (id) => setForm((f) => ({ ...f, bonusTaskId: f.bonusTaskId === id ? null : id }));
-  const removeCustom = (id) => setForm((f) => ({ ...f, tasks: f.tasks.filter((t) => t.id !== id) }));
+  const removeTask = (id) => setForm((f) => ({ ...f, tasks: f.tasks.filter((t) => t.id !== id) }));
   const updateTaskField = (id, patch) => setForm((f) => ({ ...f, tasks: f.tasks.map((t) => (t.id === id ? { ...t, ...patch } : t)) }));
   const [expandedTaskId, setExpandedTaskId] = useState(null);
   const addCustom = () => {
@@ -2277,7 +2324,7 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
               </button>
             )}
           </div>
-          <p style={{ color: "#8A8360" }} className="text-[14px] mt-1 mb-2">Tahan ikon ⠿ lalu geser untuk mengubah urutan tugas. Tap 🎲 pada satu tugas untuk jadikan Misi Bonus (2x poin) hari ini — dipilih manual oleh orang tua, tidak berganti otomatis.</p>
+          <p style={{ color: "#8A8360" }} className="text-[14px] mt-1 mb-2">Tahan ikon ⠿ lalu geser untuk mengubah urutan tugas. Tap 🎲 pada satu tugas untuk jadikan Misi Bonus (2x poin) hari ini — dipilih manual oleh orang tua, tidak berganti otomatis. Untuk hapus tugas, tap panah bawah lalu "Hapus Tugas", atau geser tugas ke kiri.</p>
           {periods.map((period) => {
             const time = period.key;
             const groupTasks = form.tasks.filter((t) => t.time === time);
@@ -2300,7 +2347,7 @@ function ChildEditSheet({ initial, siblingCount, periods, accent, onClose, onSav
                       onDragMove={moveDrag}
                       onDragEnd={endDrag}
                       onToggleActive={() => toggleActive(t.id)}
-                      onRemove={t.custom ? () => removeCustom(t.id) : null}
+                      onRemove={() => removeTask(t.id)}
                       expanded={expandedTaskId === t.id}
                       onToggleExpand={() => setExpandedTaskId((id) => (id === t.id ? null : t.id))}
                       onUpdateField={(patch) => updateTaskField(t.id, patch)}
